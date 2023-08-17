@@ -9,7 +9,8 @@
     "build": "rm -rf .dapp && babel -d .dapp . -s --ignore node_modules --copy-files && rm -rf .dapp/.github .dapp/.git && cp .env .dapp/",
     "start": "node index.js",
     "lint": "eslint './**/*.js?(x)'",
-    "lint:fix": "eslint --fix './**/*.js?(x)'"
+    "lint:fix": "eslint --fix './**/*.js?(x)'",
+    "seed-db": "babel-node seeder/seeder.js"
   },
   "devDependencies": {
     "@babel/preset-env": "^7.16.0",
@@ -39,6 +40,7 @@
     "loot-table": "^0.1.0",
     "mongoose": "^7.4.3",
     "prettier": "^3.0.2",
+    "uuid": "^9.0.0",
     "validatorjs": "^3.22.1",
     "winston": "^3.10.0",
     "winston-daily-rotate-file": "^4.7.1"
