@@ -6,6 +6,9 @@ const Location = new mongoose.Schema(
     collectionId: {
       type: String,
     },
+    collectionName: {
+      type: String,
+    },
     nationId: {
       type: String,
     },
@@ -46,7 +49,7 @@ const Location = new mongoose.Schema(
   },
   {
     timestamps: true,
-  },
+  }
 )
 
 export default db.model('Location', Location)

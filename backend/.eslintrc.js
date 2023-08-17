@@ -42,5 +42,6 @@ module.exports = {
     'object-curly-newline': 'off',
     'import/no-extraneous-dependencies': 0,
     'import/no-import-module-exports': 0,
+    'padded-blocks': 0,
   },
 }
