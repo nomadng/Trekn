@@ -3,11 +3,11 @@ import { PublicKey, Keypair } from '@solana/web3.js'
 import { createTrxMintCompressedNft } from '../utils/mintcNFT'
 
 export const mintNft = async (req) => {
-  const { address, locationId } = req.body
+  const { address, locationId, userPubkey } = req.body
 
   // Step 1: Random rarity
   const rarity = randomRarityNFT()
-  const keypair = Keypair.fromSecretKey(Buffer.from(process.env.PRIVATE_KEY))
+
   const treeAddress = new PublicKey('FiRK7g7FrwH2wmAuGvyaDzojV3sXaLSAmq4db93D3o99')
   const collectionMint = new PublicKey('ApkVavDgocof6PfoWqWGQjHR4YAdkPRFgzmx1nA1RwAG')
   const collectionMetadataAccount = new PublicKey('5imZDSjnrpqzDmSe6KdCNXmwxzMa9uj5coqjCTnKM7iV')
