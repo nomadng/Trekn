@@ -1,5 +1,5 @@
 // eslint-disable-next-line import/named
-import { getAllLocations } from '@root/config/mongodb/seeder/locationSeeder';
+import { getAllLocations } from '@root/seeder/locationSeeder';
 import LocationPhoto from '@root/models/LocationPhoto'
 
 export const locationPhotoSeeder = async () => {

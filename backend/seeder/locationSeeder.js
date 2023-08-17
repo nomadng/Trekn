@@ -1,7 +1,7 @@
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { v4 as uuid } from 'uuid'
 import Location from '@root/models/Location'
-import { getAllNations } from '@root/config/mongodb/seeder/nationSeeder'
+import { getAllNations } from '@root/seeder/nationSeeder'
 
 export const locationSeeder = async () => {
   const nations = await getAllNations();

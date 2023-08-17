@@ -1,4 +1,4 @@
-import db from '@root/config/mongodb/mongodb'
+import db from '@root/config/mongodb'
 
 const httpConstants = require('http2').constants
 

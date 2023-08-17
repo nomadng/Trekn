@@ -10,7 +10,7 @@
     "start": "node index.js",
     "lint": "eslint './**/*.js?(x)'",
     "lint:fix": "eslint --fix './**/*.js?(x)'",
-    "seed-db": "babel-node ./config/mongodb/seeder/seeder.js"
+    "seed-db": "babel-node seeder/seeder.js"
   },
   "devDependencies": {
     "@babel/preset-env": "^7.16.0",

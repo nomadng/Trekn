@@ -1,5 +1,5 @@
 import mongoose from 'mongoose'
-import db from '@root/config/mongodb/mongodb'
+import db from '@root/config/mongodb'
 
 const LocationPhoto = new mongoose.Schema(
   {
