@@ -1,4 +1,4 @@
-const convict = require('convict')
+import convict from 'convict'
 
 const externalServicesConfig = convict({
   rarityRatioConfig: {
