@@ -9,3 +9,5 @@ export const nftRarity = {
   EPIC: 4,
   LEGENDARY: 5,
 }
+
+export const NFT_ATTRIBUTE_SEASON = 1
