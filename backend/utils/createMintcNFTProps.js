@@ -1,25 +1,21 @@
-import { TokenProgramVersion, TokenStandard } from '@metaplex-foundation/mpl-bubblegum'
-import { Keypair, PublicKey } from '@solana/web3.js'
-import base58 from 'bs58'
+const { TokenProgramVersion, TokenStandard } = require('@metaplex-foundation/mpl-bubblegum')
+const { Keypair, PublicKey } = require('@solana/web3.js')
+const base58 = require('bs58')
 
 const createMintcNFTProps = ({
   userPubkeyString,
   treeAddressString,
   collectionMintString,
   collectionMetadataAccountString,
-}: {
-  userPubkeyString: string
-  treeAddressString: string
-  collectionMintString: string
-  collectionMetadataAccountString: string
+  collectionMasterEditionAccountString,
 }) => {
   const userPubkey = new PublicKey(userPubkeyString)
   const treeAddress = new PublicKey(treeAddressString)
   const collectionMint = new PublicKey(collectionMintString)
-  const collectionMetadataAccount = new PublicKey('5imZDSjnrpqzDmSe6KdCNXmwxzMa9uj5coqjCTnKM7iV')
-  const collectionMasterEditionAccount = new PublicKey(collectionMetadataAccountString)
+  const collectionMetadataAccount = new PublicKey(collectionMetadataAccountString)
+  const collectionMasterEditionAccount = new PublicKey(collectionMasterEditionAccountString)
 
-  const secretKey = process.env['SECRET_KEY']
+  const secretKey = process.env.SECRET_KEY
   if (!secretKey) {
     throw new Error('Wallet secret key must be provided via SECRET_KEY env var')
   }
@@ -56,3 +52,5 @@ const createMintcNFTProps = ({
     collectionMasterEditionAccount,
   }
 }
+
+module.exports = createMintcNFTProps
