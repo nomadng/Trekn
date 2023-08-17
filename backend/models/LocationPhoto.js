@@ -9,7 +9,7 @@ const LocationPhoto = new mongoose.Schema({
     type: String,
   },
   rarity: {
-    type: String,
+    type: Number,
   },
   author: {
     type: String,
