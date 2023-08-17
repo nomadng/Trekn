@@ -1,13 +1,15 @@
-// eslint-disable-next-line import/no-extraneous-dependencies
-import { v4 as uuid } from 'uuid'
 import Location from '@root/models/Location'
 import { getAllNations } from '@root/seeder/nationSeeder'
+// eslint-disable-next-line import/named
+import { getAllCollections } from '@root/seeder/collectionSeeder';
 
 export const locationSeeder = async () => {
+  const collections = await getAllCollections();
   const nations = await getAllNations();
   const locations = [
     {
-      collectionId: uuid(),
+      collectionId: collections[0]._id.toString(),
+      collectionName: collections[0].name,
       nationId: nations[0]._id.toString(),
       name: 'Hoan Kiem Lake',
       address: 'Ha Noi, Viet Nam',
@@ -20,7 +22,8 @@ export const locationSeeder = async () => {
       isDeleted: false,
     },
     {
-      collectionId: uuid(),
+      collectionId: collections[0]._id.toString(),
+      collectionName: collections[0].name,
       nationId: nations[0]._id.toString(),
       name: 'Old Quarter',
       address: 'Ha Noi, Viet Nam',
@@ -33,7 +36,8 @@ export const locationSeeder = async () => {
       isDeleted: false,
     },
     {
-      collectionId: uuid(),
+      collectionId: collections[0]._id.toString(),
+      collectionName: collections[0].name,
       nationId: nations[0]._id.toString(),
       name: 'MAC plaza',
       address: 'Ha Noi, Viet Nam',
@@ -46,7 +50,8 @@ export const locationSeeder = async () => {
       isDeleted: false,
     },
     {
-      collectionId: uuid(),
+      collectionId: collections[0]._id.toString(),
+      collectionName: collections[0].name,
       nationId: nations[1]._id.toString(),
       name: 'Tokyo Sky Tree',
       address: 'Tokyo, Japan',
@@ -59,7 +64,8 @@ export const locationSeeder = async () => {
       isDeleted: false,
     },
     {
-      collectionId: uuid(),
+      collectionId: collections[0]._id.toString(),
+      collectionName: collections[0].name,
       nationId: nations[0]._id.toString(),
       name: 'Ho Tay Lake',
       address: 'Ha Noi, Viet Nam',
@@ -72,7 +78,8 @@ export const locationSeeder = async () => {
       isDeleted: false,
     },
     {
-      collectionId: uuid(),
+      collectionId: collections[0]._id.toString(),
+      collectionName: collections[0].name,
       nationId: nations[0]._id.toString(),
       name: 'Sam Son Beach',
       address: 'Thanh Hoa, Ha Noi',
