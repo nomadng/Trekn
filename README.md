@@ -1,1 +1,2 @@
 # Trekn
+git add .
