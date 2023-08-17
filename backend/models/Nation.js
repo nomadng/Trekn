@@ -1,14 +1,19 @@
 import mongoose from 'mongoose'
 import db from '@root/config/mongodb'
 
-const Nation = new mongoose.Schema({
-  name: {
-    type: String,
+const Nation = new mongoose.Schema(
+  {
+    name: {
+      type: String,
+    },
+    isDeleted: {
+      type: Boolean,
+      default: false,
+    },
   },
-  isDeleted: {
-    type: Boolean,
-    default: false,
-  },
-})
+  {
+    timestamps: true,
+  }
+)
 
 export default db.model('Nation', Nation)

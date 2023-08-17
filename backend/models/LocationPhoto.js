@@ -1,23 +1,28 @@
 import mongoose from 'mongoose'
 import db from '@root/config/mongodb'
 
-const LocationPhoto = new mongoose.Schema({
-  locationId: {
-    type: String,
+const LocationPhoto = new mongoose.Schema(
+  {
+    locationId: {
+      type: String,
+    },
+    photoLink: {
+      type: String,
+    },
+    rarity: {
+      type: Number,
+    },
+    author: {
+      type: String,
+    },
+    isDeleted: {
+      type: Boolean,
+      default: false,
+    },
   },
-  photoLink: {
-    type: String,
-  },
-  rarity: {
-    type: Number,
-  },
-  author: {
-    type: String,
-  },
-  isDeleted: {
-    type: Boolean,
-    default: false,
-  },
-})
+  {
+    timestamps: true,
+  }
+)
 
 export default db.model('LocationPhoto', LocationPhoto)
