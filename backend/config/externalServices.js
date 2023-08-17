@@ -11,4 +11,4 @@ const externalServicesConfig = convict({
 
 externalServicesConfig.validate({ allowed: 'strict' })
 
-module.exports = externalServicesConfig
+export default externalServicesConfig

@@ -1,6 +1,6 @@
 import LootTable from 'loot-table'
-import externalServices from 'validatorjs/src/errors'
 import { nftRarity } from '@root/utils/constants'
+import externalServices from '@root/config/externalServices'
 
 export const randomRarityNFT = () => {
   const rarityRatio = externalServices.get('rarityRatioConfig')
