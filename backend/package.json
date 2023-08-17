@@ -1,0 +1,44 @@
+{
+  "name": "backend",
+  "version": "0.0.1",
+  "description": "Backend service",
+  "author": "Web3 Space",
+  "private": true,
+  "scripts": {
+    "dev": "babel-node index.js",
+    "build": "rm -rf .dapp && babel -d .dapp . -s --ignore node_modules --copy-files && rm -rf .dapp/.github .dapp/.git && cp .env .dapp/",
+    "start": "node index.js",
+    "lint": "eslint './**/*.js?(x)'",
+    "lint:fix": "eslint --fix './**/*.js?(x)'"
+  },
+  "devDependencies": {
+    "@babel/preset-env": "^7.16.0",
+    "babel-eslint": "^10.1.0",
+    "babel-plugin-module-resolver": "^4.1.0",
+    "eslint": "^8.12.0",
+    "eslint-config-airbnb-base": "^15.0.0",
+    "eslint-import-resolver-alias": "^1.1.2",
+    "eslint-plugin-import": "^2.25.4"
+  },
+  "dependencies": {
+    "@apollo/client": "^3.8.1",
+    "@babel/cli": "^7.22.10",
+    "@babel/core": "^7.22.10",
+    "@babel/node": "^7.22.10",
+    "aws-sdk": "^2.1438.0",
+    "cls-rtracer": "^2.6.3",
+    "convict": "^6.2.4",
+    "convict-format-with-validator": "^6.2.0",
+    "cors": "^2.8.5",
+    "cross-fetch": "^4.0.0",
+    "dotenv": "^16.3.1",
+    "express": "^4.18.2",
+    "express-rest-routerss": "^1.0.6",
+    "express-winston": "^4.2.0",
+    "mongoose": "^7.4.3",
+    "prettier": "^3.0.2",
+    "validatorjs": "^3.22.1",
+    "winston": "^3.10.0",
+    "winston-daily-rotate-file": "^4.7.1"
+  }
+}
