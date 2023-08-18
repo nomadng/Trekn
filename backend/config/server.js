@@ -24,7 +24,7 @@ const serverConfig = convict({
     url: {
       doc: 'URL for mongodb connection',
       format: String,
-      nullable: true,
+      nullable: false,
       default: null,
       env: 'MONGODB_URL',
     },
@@ -33,7 +33,7 @@ const serverConfig = convict({
     doc: 'dApp service private key',
     format: String,
     default: null,
-    nullable: true,
+    nullable: false,
     env: 'PRIVATE_KEY',
   },
 })
