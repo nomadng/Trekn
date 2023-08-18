@@ -34,7 +34,7 @@ export const createMintCompressNFTProps = ({
 
   const nftArgs = {
     uri: uriMetadata,
-    creators: [userPubkey.toString()],
+    creators: [],
     editionNonce: 253,
     tokenProgramVersion: TokenProgramVersion.Original,
     tokenStandard: TokenStandard.NonFungible,

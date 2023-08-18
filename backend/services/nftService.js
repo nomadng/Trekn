@@ -14,7 +14,7 @@ export const mintNft = async (req) => {
   // Step 1: Random rarity
   const rarity = randomRarityNFT()
   const locationPhotoInfo = await randomLocationPhotoByConditions({
-    rarity,
+    rarity: 1,
     locationId,
   })
   if (!locationPhotoInfo) {
