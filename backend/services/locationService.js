@@ -1,6 +1,6 @@
 import { PAGINATION_SETTING, SORT_DIRECTION } from '@root/utils/constants'
-import { escapeStringRegexp } from '@root/utils/common'
-import { countLocations, getAllLocations } from '@root/repositories/locationRepository'
+import { configPaginationAggregate, escapeStringRegexp } from '@root/utils/common'
+import { getAllLocations } from '@root/repositories/locationRepository'
 
 export const getListLocations = async (req) => {
   const { size, page } = req.body
@@ -24,11 +24,11 @@ export const getListLocations = async (req) => {
 const getLocationsByFilters = async (filters) => {
   const query = buildLocationQuery(filters)
   const aggregateQuery = buildLocationAggregateQuery(query)
-  const aggregateCount = buildLocationAggregateCount(query)
-  const [locations, totalItem] = await Promise.all([getAllLocations(aggregateQuery), countLocations(aggregateCount)])
+  const results = await getAllLocations(aggregateQuery)
+  const { totalLocations, locations } = results[0]
   return {
     locations,
-    totalItem,
+    totalItem: totalLocations,
   }
 }
 
@@ -106,58 +106,29 @@ const buildLocationAggregateQuery = (query) => {
       $sort: query.sort,
     },
     {
-      $limit: query.limit,
+      $facet: {
+        totalLocations: [
+          {
+            $count: 'count',
+          },
+        ],
+        locations: [...configPaginationAggregate(query.skip, query.limit)],
+      },
     },
     {
-      $skip: query.skip,
+      $project: {
+        totalLocations: { $arrayElemAt: ['$totalLocations.count', 0] },
+        locations: 1,
+      },
+    },
+    {
+      $set: {
+        totalLocations: {
+          $cond: [{ $lte: ['$totalLocations', null] }, 0, '$totalLocations'],
+        },
+      },
     },
   ]
 
   return aggregateQuery
-}
-
-const buildLocationAggregateCount = (query) => {
-  const aggregateCount = [
-    {
-      $match: query.filters,
-    },
-    {
-      $lookup: {
-        from: 'locationphotos',
-        let: {
-          locationId: { $toString: '$_id' },
-        },
-        pipeline: [
-          {
-            $match: {
-              $expr: {
-                $eq: ['$locationId', '$$locationId'],
-              },
-            },
-          },
-          {
-            $project: {
-              _id: 0,
-              photoLink: 1,
-              rarity: 1,
-              author: 1,
-            },
-          },
-        ],
-        as: 'photos',
-      },
-    },
-    { $unwind: '$photos' },
-    {
-      $set: {
-        photoLink: '$photos.photoLink',
-        photoRarity: '$photos.rarity',
-        photoAuthor: '$photos.author',
-      },
-    },
-    { $unset: 'photos' },
-    { $count: 'totalItem' },
-  ]
-
-  return aggregateCount
 }
