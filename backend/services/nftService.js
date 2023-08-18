@@ -1,20 +1,17 @@
 import { randomRarityNFT } from '@root/utils/randomRarity'
-import { createTrxMintCompressedNft } from '@root/utils/mintcNFT'
+import { createMintCompressNftProps, createTrxMintCompressedNft } from '@root/utils/mintCompressNft'
 import { HTTP_CONSTANTS, NFT_ATTRIBUTE_SEASON } from '@root/utils/constants'
 import { COLLECTION_NOT_FOUND, LOCATION_NOT_FOUND, LOCATION_PHOTO_NOT_FOUND } from '@root/utils/responseMsg'
 import { BaseError } from '@root/utils/baseError'
 import { findCollectionById } from '@root/repositories/collectionRepository'
 import { findLocationById } from '@root/repositories/locationRepository'
 import { randomLocationPhotoByConditions } from '@root/repositories/locationPhotoRepository'
-import { createMintCompressNFTProps } from '@root/utils/createMintcNFTProps'
 
 export const mintNft = async (req) => {
   const { address, locationId } = req.body
-
-  // Step 1: Random rarity
   const rarity = randomRarityNFT()
   const locationPhotoInfo = await randomLocationPhotoByConditions({
-    rarity: 1,
+    rarity,
     locationId,
   })
   if (!locationPhotoInfo) {
@@ -34,7 +31,7 @@ export const mintNft = async (req) => {
     throw new BaseError(new Error(COLLECTION_NOT_FOUND), COLLECTION_NOT_FOUND, HTTP_CONSTANTS.HTTP_STATUS_BAD_REQUEST)
   }
 
-  const mintCompressNFTProps = createMintCompressNFTProps({
+  const mintCompressNFTProps = createMintCompressNftProps({
     uriMetadata: locationPhotoInfo.nftMetadataUri,
     userPubkeyString: address,
     treeAddressString: collectionInfo.treeAddress,
