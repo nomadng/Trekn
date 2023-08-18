@@ -11,7 +11,7 @@ export const mintNft = async (req) => {
   const { address, locationId } = req.body
   const rarity = randomRarityNFT()
   const locationPhotoInfo = await randomLocationPhotoByConditions({
-    rarity,
+    rarity: 1,
     locationId,
   })
   if (!locationPhotoInfo) {
@@ -42,6 +42,7 @@ export const mintNft = async (req) => {
   const base64Transaction = await createTrxMintCompressedNft(mintCompressNFTProps)
 
   return {
+    locationNumber: locationPhotoInfo.locationNumber,
     transaction: base64Transaction,
     name: locationInfo.name,
     collectionName: locationInfo.collectionName,
