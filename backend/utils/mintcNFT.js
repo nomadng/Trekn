@@ -1,10 +1,10 @@
-const { Connection, PublicKey, Transaction, clusterApiUrl } = require('@solana/web3.js')
-const {
+import { Connection, PublicKey, Transaction, clusterApiUrl } from '@solana/web3.js'
+import {
   createMintToCollectionV1Instruction,
-  PROGRAM_ID: BUBBLEGUM_PROGRAM_ID,
-} = require('@metaplex-foundation/mpl-bubblegum')
-const { SPL_ACCOUNT_COMPRESSION_PROGRAM_ID, SPL_NOOP_PROGRAM_ID } = require('@solana/spl-account-compression')
-const { PROGRAM_ID: TOKEN_METADATA_PROGRAM_ID } = require('@metaplex-foundation/mpl-token-metadata')
+  PROGRAM_ID as BUBBLEGUM_PROGRAM_ID,
+} from '@metaplex-foundation/mpl-bubblegum'
+import { SPL_ACCOUNT_COMPRESSION_PROGRAM_ID, SPL_NOOP_PROGRAM_ID } from '@solana/spl-account-compression'
+import { PROGRAM_ID as TOKEN_METADATA_PROGRAM_ID } from '@metaplex-foundation/mpl-token-metadata'
 
 export const createTrxMintCompressedNft = async (
   nftArgs,
@@ -13,7 +13,7 @@ export const createTrxMintCompressedNft = async (
   treeAddress,
   collectionMint,
   collectionMetadata,
-  collectionMasterEditionAccount, 
+  collectionMasterEditionAccount
 ) => {
   const connection = new Connection(clusterApiUrl('devnet'))
   const [treeAuthority, _bump] = await PublicKey.findProgramAddressSync([treeAddress.toBuffer()], BUBBLEGUM_PROGRAM_ID)

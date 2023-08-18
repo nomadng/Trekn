@@ -1,7 +1,7 @@
 import { randomRarityNFT } from '@root/utils/randomRarity'
 import { createTrxMintCompressedNft } from '@root/utils/mintcNFT'
 import { HTTP_CONSTANTS, NFT_ATTRIBUTE_SEASON } from '@root/utils/constants'
-import { createMintcNFTProps } from '@root/utils/createMintcNFTProps'
+import createMintCompressNFTProps from '@root/utils/createMintcNFTProps'
 import { LOCATION_NOT_FOUND, LOCATION_PHOTO_NOT_FOUND, COLLECTION_NOT_FOUND } from '@root/utils/responseMsg'
 import { BaseError } from '@root/utils/baseError'
 import { findCollectionById } from '@root/repositories/collectionRepository'
@@ -26,16 +26,16 @@ export const mintNft = async (req) => {
   }
   const locationInfo = await findLocationById(locationId)
   if (!locationInfo) {
-    throw new BaseError(new Error(COLLECTION_NOT_FOUND), COLLECTION_NOT_FOUND, HTTP_CONSTANTS.HTTP_STATUS_BAD_REQUEST)
+    throw new BaseError(new Error(LOCATION_NOT_FOUND), LOCATION_NOT_FOUND, HTTP_CONSTANTS.HTTP_STATUS_BAD_REQUEST)
   }
 
   const collectionInfo = await findCollectionById(locationInfo.collectionId)
   if (!collectionInfo) {
-    throw new BaseError(new Error(LOCATION_NOT_FOUND), LOCATION_NOT_FOUND, HTTP_CONSTANTS.HTTP_STATUS_BAD_REQUEST)
+    throw new BaseError(new Error(COLLECTION_NOT_FOUND), COLLECTION_NOT_FOUND, HTTP_CONSTANTS.HTTP_STATUS_BAD_REQUEST)
   }
-  
+
   const base64Transaction = await createTrxMintCompressedNft(
-    createMintcNFTProps({
+    createMintCompressNFTProps({
       userPubkeyString: address,
       treeAddressString: collectionInfo.treeAddress,
       collectionMintString: collectionInfo.collectionMint,

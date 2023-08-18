@@ -1,8 +1,8 @@
-const { TokenProgramVersion, TokenStandard } = require('@metaplex-foundation/mpl-bubblegum')
-const { Keypair, PublicKey } = require('@solana/web3.js')
-const base58 = require('bs58')
+import { TokenProgramVersion, TokenStandard } from '@metaplex-foundation/mpl-bubblegum'
+import { Keypair, PublicKey } from '@solana/web3.js'
+import base58 from 'bs58'
 
-const createMintcNFTProps = ({
+export const createMintCompressNFTProps = ({
   userPubkeyString,
   treeAddressString,
   collectionMintString,
@@ -52,5 +52,3 @@ const createMintcNFTProps = ({
     collectionMasterEditionAccount,
   }
 }
-
-module.exports = createMintcNFTProps
