@@ -7,6 +7,8 @@ mongoose.connect(serverConfig.get('mongodb.url')).catch((error) => {
   process.exit(1)
 })
 
+mongoose.set('debug', true)
+
 const db = mongoose.connection
 
 db.on('error', logger.error.bind(console, 'MongoDB connection error'))

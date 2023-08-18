@@ -1,48 +1,41 @@
-import { SORT_DIRECTION } from '@root/utils/constants'
+import { PAGINATION_SETTING, SORT_DIRECTION } from '@root/utils/constants'
 import { escapeStringRegexp } from '@root/utils/common'
 import { countLocations, getAllLocations } from '@root/repositories/locationRepository'
 
-export const getListLocations = async (req, withPagination) => {
+export const getListLocations = async (req) => {
   const { size, page } = req.body
   const params = {
     ...req.body,
-    withPagination,
+    page: page || PAGINATION_SETTING.DEFAULT_PAGE,
+    size: size || PAGINATION_SETTING.PAGE_SIZE,
   }
   const { locations, totalItem } = await getLocationsByFilters(params)
-  if (withPagination) {
-    return {
-      pagination: {
-        page,
-        size,
-        totalItem,
-        totalPage: Math.ceil(totalItem / size),
-      },
-      heroes: locations,
-    }
+  return {
+    pagination: {
+      page: params.page,
+      size: params.size,
+      totalItem,
+      totalPage: Math.ceil(totalItem / params.size),
+    },
+    locations,
   }
-  return locations
 }
 
 const getLocationsByFilters = async (filters) => {
   const query = buildLocationQuery(filters)
-  const aggregateQuery = buildLocationAggregateQuery(query, filters.withPagination)
+  const aggregateQuery = buildLocationAggregateQuery(query)
   const aggregateCount = buildLocationAggregateCount(query)
-  if (filters.withPagination) {
-    const [locations, totalItem] = await Promise.all([getAllLocations(aggregateQuery), countLocations(aggregateCount)])
-    return {
-      locations,
-      totalItem,
-    }
-  }
+  const [locations, totalItem] = await Promise.all([getAllLocations(aggregateQuery), countLocations(aggregateCount)])
   return {
-    locations: await getAllLocations(aggregateQuery),
+    locations,
+    totalItem,
   }
 }
 
 const buildLocationQuery = (filters) => {
   const query = {}
   query.sort = {}
-  const conditions = []
+  query.filters = {}
   if (filters.search) {
     const searchCondition = {
       $or: [
@@ -50,9 +43,11 @@ const buildLocationQuery = (filters) => {
         { address: new RegExp(escapeStringRegexp(filters.search), 'i') },
       ],
     }
-    conditions.push(searchCondition)
+    query.filters = {
+      ...searchCondition,
+      ...query.filters,
+    }
   }
-  query.filters = { $and: conditions }
 
   if (filters.sort) {
     query.sort = {}
@@ -61,22 +56,17 @@ const buildLocationQuery = (filters) => {
     query.sort = { nftMintedCount: SORT_DIRECTION.DESC }
   }
 
-  if (filters.withPagination) {
-    query.limit = filters.size
-    query.skip = filters.size * filters.page - filters.size
-  }
+  query.limit = filters.size
+  query.skip = filters.size * filters.page - filters.size
 
   return query
 }
 
-const buildLocationAggregateQuery = (query, withPagination) => {
-  const aggregateQuery = []
-  if (query.filters.length > 0) {
-    aggregateQuery.push({
+const buildLocationAggregateQuery = (query) => {
+  const aggregateQuery = [
+    {
       $match: query.filters,
-    })
-  }
-  aggregateQuery.push(
+    },
     {
       $lookup: {
         from: 'locationphotos',
@@ -114,30 +104,23 @@ const buildLocationAggregateQuery = (query, withPagination) => {
     { $unset: 'photos' },
     {
       $sort: query.sort,
-    }
-  )
+    },
+    {
+      $limit: query.limit,
+    },
+    {
+      $skip: query.skip,
+    },
+  ]
 
-  if (withPagination) {
-    aggregateQuery.push(
-      {
-        $limit: query.limit,
-      },
-      {
-        $skip: query.skip,
-      }
-    )
-  }
   return aggregateQuery
 }
 
 const buildLocationAggregateCount = (query) => {
-  const aggregateCount = []
-  if (query.filters.length > 0) {
-    aggregateCount.push({
+  const aggregateCount = [
+    {
       $match: query.filters,
-    })
-  }
-  aggregateCount.push(
+    },
     {
       $lookup: {
         from: 'locationphotos',
@@ -173,7 +156,8 @@ const buildLocationAggregateCount = (query) => {
       },
     },
     { $unset: 'photos' },
-    { $count: 'totalItem' }
-  )
+    { $count: 'totalItem' },
+  ]
+
   return aggregateCount
 }
