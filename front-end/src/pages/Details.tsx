@@ -6,7 +6,6 @@ import { Transaction } from "@solana/web3.js";
 import { useAnchorWallet } from "@solana/wallet-adapter-react";
 import Map from "../components/Map";
 import { useParams } from "react-router";
-import { DATA } from "./ConnectWallet";
 import {
   formatNumber,
   getDistance,
@@ -181,9 +180,7 @@ function Details() {
                 height: 335,
               }}
             >
-              {coordsNow && (
-                <Map data={locationDetail!} coordsNow={coordsNow} />
-              )}
+              <Map data={locationDetail} coordsNow={coordsNow} />
             </div>
           </div>
           <div className="grid grid-cols-1 gap-[24px] items-start sm:grid-cols-2 ">
