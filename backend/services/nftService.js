@@ -35,6 +35,7 @@ export const mintNft = async (req) => {
   }
 
   const mintCompressNFTProps = createMintCompressNFTProps({
+    uriMetadata: locationInfo.nftMetadataUri,
     userPubkeyString: address,
     treeAddressString: collectionInfo.treeAddress,
     collectionMintString: collectionInfo.collectionMint,

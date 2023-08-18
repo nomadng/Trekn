@@ -7,6 +7,7 @@ import { INVALID_SECRET_KEY } from '@root/utils/responseMsg'
 import { HTTP_CONSTANTS } from '@root/utils/constants'
 
 export const createMintCompressNFTProps = ({
+  uriMetadata,
   userPubkeyString,
   treeAddressString,
   collectionMintString,
@@ -32,10 +33,8 @@ export const createMintCompressNFTProps = ({
   const serverKeypair = Keypair.fromSecretKey(decodedSecretKey)
 
   const nftArgs = {
-    name: 'Hoa Lo Prison',
-    symbol: 'HLP',
-    uri: 'https://arweave.net/IxG5hBebTx7uZV_YQog9b_3n7Nif7bREskQvK_Q93oc',
-    creators: [],
+    uri: uriMetadata,
+    creators: [userPubkey.toString()],
     editionNonce: 253,
     tokenProgramVersion: TokenProgramVersion.Original,
     tokenStandard: TokenStandard.NonFungible,
