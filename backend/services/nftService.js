@@ -1,12 +1,12 @@
 import { randomRarityNFT } from '@root/utils/randomRarity'
 import { createTrxMintCompressedNft } from '@root/utils/mintcNFT'
 import { HTTP_CONSTANTS, NFT_ATTRIBUTE_SEASON } from '@root/utils/constants'
-import createMintCompressNFTProps from '@root/utils/createMintcNFTProps'
-import { LOCATION_NOT_FOUND, LOCATION_PHOTO_NOT_FOUND, COLLECTION_NOT_FOUND } from '@root/utils/responseMsg'
+import { COLLECTION_NOT_FOUND, LOCATION_NOT_FOUND, LOCATION_PHOTO_NOT_FOUND } from '@root/utils/responseMsg'
 import { BaseError } from '@root/utils/baseError'
 import { findCollectionById } from '@root/repositories/collectionRepository'
 import { findLocationById } from '@root/repositories/locationRepository'
 import { randomLocationPhotoByConditions } from '@root/repositories/locationPhotoRepository'
+import { createMintCompressNFTProps } from '@root/utils/createMintcNFTProps'
 
 export const mintNft = async (req) => {
   const { address, locationId } = req.body
@@ -34,15 +34,14 @@ export const mintNft = async (req) => {
     throw new BaseError(new Error(COLLECTION_NOT_FOUND), COLLECTION_NOT_FOUND, HTTP_CONSTANTS.HTTP_STATUS_BAD_REQUEST)
   }
 
-  const base64Transaction = await createTrxMintCompressedNft(
-    createMintCompressNFTProps({
-      userPubkeyString: address,
-      treeAddressString: collectionInfo.treeAddress,
-      collectionMintString: collectionInfo.collectionMint,
-      collectionMetadataAccountString: collectionInfo.collectionMetadataAccount,
-      ccollectionMasterEditionAccountString: collectionInfo.collectionMasterEditionAccount,
-    })
-  )
+  const mintCompressNFTProps = createMintCompressNFTProps({
+    userPubkeyString: address,
+    treeAddressString: collectionInfo.treeAddress,
+    collectionMintString: collectionInfo.collectionMint,
+    collectionMetadataAccountString: collectionInfo.collectionMetadataAccount,
+    collectionMasterEditionAccountString: collectionInfo.collectionMasterEditionAccount,
+  })
+  const base64Transaction = await createTrxMintCompressedNft(mintCompressNFTProps)
 
   return {
     transaction: base64Transaction,

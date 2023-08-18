@@ -1,4 +1,4 @@
-import { Connection, PublicKey, Transaction, clusterApiUrl } from '@solana/web3.js'
+import { clusterApiUrl, Connection, PublicKey, Transaction } from '@solana/web3.js'
 import {
   createMintToCollectionV1Instruction,
   PROGRAM_ID as BUBBLEGUM_PROGRAM_ID,
@@ -6,18 +6,18 @@ import {
 import { SPL_ACCOUNT_COMPRESSION_PROGRAM_ID, SPL_NOOP_PROGRAM_ID } from '@solana/spl-account-compression'
 import { PROGRAM_ID as TOKEN_METADATA_PROGRAM_ID } from '@metaplex-foundation/mpl-token-metadata'
 
-export const createTrxMintCompressedNft = async (
+export const createTrxMintCompressedNft = async ({
   nftArgs,
   userPubkey,
   serverKeypair,
   treeAddress,
   collectionMint,
-  collectionMetadata,
-  collectionMasterEditionAccount
-) => {
+  collectionMetadataAccount,
+  collectionMasterEditionAccount,
+}) => {
   const connection = new Connection(clusterApiUrl('devnet'))
-  const [treeAuthority, _bump] = await PublicKey.findProgramAddressSync([treeAddress.toBuffer()], BUBBLEGUM_PROGRAM_ID)
-  const [bgumSigner, __] = await PublicKey.findProgramAddressSync(
+  const [treeAuthority, _bump] = PublicKey.findProgramAddressSync([treeAddress.toBuffer()], BUBBLEGUM_PROGRAM_ID)
+  const [bgumSigner, __] = PublicKey.findProgramAddressSync(
     [Buffer.from('collection_cpi', 'utf8')],
     BUBBLEGUM_PROGRAM_ID
   )
@@ -34,14 +34,17 @@ export const createTrxMintCompressedNft = async (
       collectionAuthority: userPubkey,
       collectionAuthorityRecordPda: BUBBLEGUM_PROGRAM_ID,
       collectionMint,
-      collectionMetadata,
+      collectionMetadata: collectionMetadataAccount,
       editionAccount: collectionMasterEditionAccount,
       bubblegumSigner: bgumSigner,
       tokenMetadataProgram: TOKEN_METADATA_PROGRAM_ID,
     },
     {
       metadataArgs: Object.assign(nftArgs, {
-        collection: { key: collectionMint, verified: false },
+        collection: {
+          key: collectionMint,
+          verified: false,
+        },
       }),
     }
   )

@@ -1,6 +1,10 @@
 import { TokenProgramVersion, TokenStandard } from '@metaplex-foundation/mpl-bubblegum'
 import { Keypair, PublicKey } from '@solana/web3.js'
 import base58 from 'bs58'
+import serverConfig from '@root/config/server'
+import { BaseError } from '@root/utils/baseError'
+import { INVALID_SECRET_KEY } from '@root/utils/responseMsg'
+import { HTTP_CONSTANTS } from '@root/utils/constants'
 
 export const createMintCompressNFTProps = ({
   userPubkeyString,
@@ -15,15 +19,15 @@ export const createMintCompressNFTProps = ({
   const collectionMetadataAccount = new PublicKey(collectionMetadataAccountString)
   const collectionMasterEditionAccount = new PublicKey(collectionMasterEditionAccountString)
 
-  const secretKey = process.env.SECRET_KEY
+  const secretKey = serverConfig.get('privateKey')
   if (!secretKey) {
-    throw new Error('Wallet secret key must be provided via SECRET_KEY env var')
+    throw new BaseError(new Error(INVALID_SECRET_KEY), INVALID_SECRET_KEY, HTTP_CONSTANTS.HTTP_STATUS_BAD_REQUEST)
   }
   let decodedSecretKey
   try {
     decodedSecretKey = base58.decode(secretKey)
   } catch {
-    throw new Error('Invalid secret key provided. Must be a base 58 encoded string.')
+    throw new BaseError(new Error(INVALID_SECRET_KEY), INVALID_SECRET_KEY, HTTP_CONSTANTS.HTTP_STATUS_BAD_REQUEST)
   }
   const serverKeypair = Keypair.fromSecretKey(decodedSecretKey)
 
