@@ -5,3 +5,7 @@ export const omitField = (obj, ...props) => {
   })
   return result
 }
+
+export const escapeStringRegexp = (string) => string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+
+export const configPaginationAggregate = (skip, limit) => [{ $skip: skip }, { $limit: limit }]
