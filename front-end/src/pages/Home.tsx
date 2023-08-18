@@ -1,20 +1,26 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { Input } from "antd";
-import { DATA } from "./ConnectWallet";
 import { ListDetail } from "../components/ListDetail";
 import { getDistance, getStatusLocation } from "../utils/common.utils";
 import { DetailCard } from "../components/DetailCard";
 import { CardDetail } from "../models/types";
 import { SearchIcon } from "./../icons";
 import { useWindowSize } from "../hooks/useWindownSize";
+import { useAuthContext } from "../context/AuthContext";
 
 function Home() {
-  const [coordsNow, setCoordsNow] = useState({ log: 0, lat: 0 });
+  const { getListLocation, coordsNow, listLocation } = useAuthContext();
   const [valueFilter, setValueFilter] = useState("");
 
   const { width } = useWindowSize();
 
-  const dataNearby = DATA.filter((item) => {
+  const dataPopular = useMemo(() => {
+    return (
+      listLocation && listLocation.filter((item) => item.nftMintedCount > 40)
+    );
+  }, [listLocation]);
+
+  const dataNearby = listLocation.filter((item) => {
     const distance = getDistance(
       coordsNow.lat,
       coordsNow.log,
@@ -25,7 +31,7 @@ function Home() {
     return status === "nearBy";
   });
 
-  const dataReadyToMint = DATA.find((item) => {
+  const dataReadyToMint = listLocation.find((item) => {
     const distance = getDistance(
       coordsNow.lat,
       coordsNow.log,
@@ -36,21 +42,10 @@ function Home() {
     return status === "readyToMint";
   });
 
-  const dataFilter = DATA.filter(
-    (item) =>
-      item.name.toLowerCase().search(valueFilter.toLowerCase()) === 0 ||
-      item.address.toLowerCase().search(valueFilter.toLowerCase()) === 0
-  );
-
-  const dataPopular = DATA.filter((item) => item.nftMintedCount >= 40);
-
   useEffect(() => {
-    navigator.geolocation.getCurrentPosition(
-      ({ coords: { longitude, latitude } }) => {
-        setCoordsNow({ log: longitude, lat: latitude });
-      }
-    );
-  }, []);
+    getListLocation(valueFilter);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [valueFilter]);
 
   return (
     <div className="w-full px-[20px] sm:px-0">
@@ -82,7 +77,7 @@ function Home() {
       </div>
       <div className="max-w-[870px] ml-auto mr-auto">
         {valueFilter ? (
-          <ListDetail data={dataFilter} />
+          <ListDetail data={listLocation} />
         ) : (
           <>
             {dataReadyToMint && (

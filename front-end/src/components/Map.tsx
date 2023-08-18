@@ -10,8 +10,8 @@ function Map({ data, coordsNow }: MapProps) {
         bootstrapURLKeys={{ key: REACT_APP_MAP_API }}
         defaultZoom={13}
         defaultCenter={{
-          lat: data.latitude,
-          lng: data.longitude,
+          lat: data?.latitude,
+          lng: data?.longitude,
         }}
         onGoogleApiLoaded={({ map }) => {
           new google.maps.Circle({
@@ -22,15 +22,15 @@ function Map({ data, coordsNow }: MapProps) {
             fillOpacity: 0.1,
             map,
             center: {
-              lat: data.latitude,
-              lng: data.longitude,
+              lat: data?.latitude,
+              lng: data?.longitude,
             },
-            radius: data.radius,
+            radius: data?.radius,
           });
           new google.maps.Marker({
             position: {
               lat: coordsNow.lat,
-              lng: coordsNow.lng,
+              lng: coordsNow.log,
             },
             map: map,
             icon: {
@@ -47,8 +47,5 @@ function Map({ data, coordsNow }: MapProps) {
 export default Map;
 
 interface MapProps extends DetailCardProps {
-  coordsNow: {
-    lat: number;
-    lng: number;
-  };
+  coordsNow: { log: number; lat: number };
 }

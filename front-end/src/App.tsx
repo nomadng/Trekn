@@ -11,6 +11,7 @@ import {
 import { WalletModalProvider } from "@solana/wallet-adapter-react-ui";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
 import "./index.css";
+import { AuthProvider } from "./context/AuthContext";
 
 function App({
   required_connect_wallet,
@@ -33,16 +34,18 @@ function App({
   return (
     <>
       <div className="bg-white">
-        <ConnectionProvider endpoint={endpoint}>
-          <WalletProvider wallets={wallets} autoConnect>
-            <WalletModalProvider>
-              <Header></Header>
-              <Layout>
-                <Outlet />
-              </Layout>
-            </WalletModalProvider>
-          </WalletProvider>
-        </ConnectionProvider>
+        <AuthProvider>
+          <ConnectionProvider endpoint={endpoint}>
+            <WalletProvider wallets={wallets} autoConnect>
+              <WalletModalProvider>
+                <Header></Header>
+                <Layout>
+                  <Outlet />
+                </Layout>
+              </WalletModalProvider>
+            </WalletProvider>
+          </ConnectionProvider>
+        </AuthProvider>
       </div>
     </>
   );

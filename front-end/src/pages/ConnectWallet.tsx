@@ -1,13 +1,23 @@
-import React from "react";
-import TestimonialCard from "../components/TestimonialCard";
+import React, { useEffect, useMemo } from "react";
 import { Button } from "antd";
 import { ListDetail } from "../components/ListDetail";
 import { useWindowSize } from "../hooks/useWindownSize";
+import { useAuthContext } from "../context/AuthContext";
 require("@solana/wallet-adapter-react-ui/styles.css");
 
 function ConnectWallet() {
   const { width } = useWindowSize();
-  const data = DATA.filter((item) => item.nftMintedCount > 40);
+  const { getListLocation, listLocation } = useAuthContext();
+
+  const dataList = useMemo(() => {
+    return (
+      listLocation && listLocation.filter((item) => item.nftMintedCount > 40)
+    );
+  }, [listLocation]);
+
+  useEffect(() => {
+    getListLocation();
+  }, []);
 
   return (
     <>
@@ -39,15 +49,10 @@ function ConnectWallet() {
         </div>
 
         <div className="max-w-[870px] ml-auto mr-auto mb-10">
-          <div className="">
-            <div className="flex-[0_0_83%] md:flex-[0_0_50%]">
-              <TestimonialCard />
-            </div>
-          </div>
-          <div className=" text-base font-semibold">
+          <div className=" text-base font-semibold mt-[25px]">
             Popular minted locations
           </div>
-          <ListDetail data={data} />
+          <ListDetail data={dataList} />
           <Button className="w-full h-12 rounded-3xl bg-[#00A868] text-white text-base font-semibold mb-12 sm:hidden">
             Connect wallet to start explore
           </Button>
@@ -61,10 +66,10 @@ export default ConnectWallet;
 
 export const DATA = [
   {
-    _id: "64de27ceb98594a86147eed1",
-    collectionId: "64de27ceb98594a86147eec9",
+    _id: "64df0bfffbad8ec093352de9",
+    collectionId: "64df0bfffbad8ec093352de1",
     collectionName: "vietnam collection",
-    nationId: "64de27ceb98594a86147eecc",
+    nationId: "64df0bfffbad8ec093352de4",
     name: "Hoan Kiem Lake",
     address: "Ha Noi, Viet Nam",
     longitude: 105.85260073109312,
@@ -75,17 +80,22 @@ export const DATA = [
     nftMintedCount: 50,
     isDeleted: false,
     __v: 0,
-    createdAt: "2023-08-17T13:59:42.897Z",
-    updatedAt: "2023-08-17T13:59:42.897Z",
-    photoLink: "https://www.lasinfoniadelreyhotel.com/img/gallery/guom-22.gif",
-    photoRarity: 3,
-    photoAuthor: "",
+    createdAt: "2023-08-18T06:13:19.291Z",
+    updatedAt: "2023-08-18T06:13:19.291Z",
+    locationPhotos: [
+      {
+        photoLink:
+          "https://www.lasinfoniadelreyhotel.com/img/gallery/guom-22.gif",
+        rarity: 3,
+        author: "",
+      },
+    ],
   },
   {
-    _id: "64de27ceb98594a86147eed2",
-    collectionId: "64de27ceb98594a86147eec9",
+    _id: "64df0bfffbad8ec093352dea",
+    collectionId: "64df0bfffbad8ec093352de1",
     collectionName: "vietnam collection",
-    nationId: "64de27ceb98594a86147eecc",
+    nationId: "64df0bfffbad8ec093352de4",
     name: "Old Quarter",
     address: "Ha Noi, Viet Nam",
     longitude: 105.85066898321513,
@@ -96,18 +106,22 @@ export const DATA = [
     nftMintedCount: 50,
     isDeleted: false,
     __v: 0,
-    createdAt: "2023-08-17T13:59:42.897Z",
-    updatedAt: "2023-08-17T13:59:42.897Z",
-    photoLink:
-      "https://hanoioldquarter.info/wp-content/uploads/2018/02/stock-photo-155026169-741x486.jpg",
-    photoRarity: 3,
-    photoAuthor: "",
+    createdAt: "2023-08-18T06:13:19.291Z",
+    updatedAt: "2023-08-18T06:13:19.291Z",
+    locationPhotos: [
+      {
+        photoLink:
+          "https://hanoioldquarter.info/wp-content/uploads/2018/02/stock-photo-155026169-741x486.jpg",
+        rarity: 2,
+        author: "",
+      },
+    ],
   },
   {
-    _id: "64de27ceb98594a86147eed3",
-    collectionId: "64de27ceb98594a86147eec9",
+    _id: "64df0bfffbad8ec093352deb",
+    collectionId: "64df0bfffbad8ec093352de1",
     collectionName: "vietnam collection",
-    nationId: "64de27ceb98594a86147eecc",
+    nationId: "64df0bfffbad8ec093352de4",
     name: "MAC plaza",
     address: "Ha Noi, Viet Nam",
     longitude: 105.79159330040682,
@@ -118,18 +132,22 @@ export const DATA = [
     nftMintedCount: 50,
     isDeleted: false,
     __v: 0,
-    createdAt: "2023-08-17T13:59:42.897Z",
-    updatedAt: "2023-08-17T13:59:42.897Z",
-    photoLink:
-      "https://static.doanhnhan.vn/images/upload/tapchidnpl/12182021/img_20211209_024745.jpg",
-    photoRarity: 5,
-    photoAuthor: "",
+    createdAt: "2023-08-18T06:13:19.292Z",
+    updatedAt: "2023-08-18T06:13:19.292Z",
+    locationPhotos: [
+      {
+        photoLink:
+          "https://static.doanhnhan.vn/images/upload/tapchidnpl/12182021/img_20211209_024745.jpg",
+        rarity: 5,
+        author: "",
+      },
+    ],
   },
   {
-    _id: "64de27ceb98594a86147eed5",
-    collectionId: "64de27ceb98594a86147eec9",
+    _id: "64df0bfffbad8ec093352ded",
+    collectionId: "64df0bfffbad8ec093352de1",
     collectionName: "vietnam collection",
-    nationId: "64de27ceb98594a86147eecc",
+    nationId: "64df0bfffbad8ec093352de4",
     name: "Ho Tay Lake",
     address: "Ha Noi, Viet Nam",
     longitude: 105.817571,
@@ -140,18 +158,28 @@ export const DATA = [
     nftMintedCount: 40,
     isDeleted: false,
     __v: 0,
-    createdAt: "2023-08-17T13:59:42.897Z",
-    updatedAt: "2023-08-17T13:59:42.897Z",
-    photoLink:
-      "https://www.itourvn.com/images/easyblog_articles/914/Tay-Ho-district-in-Hanoi.jpg",
-    photoRarity: 5,
-    photoAuthor: "",
+    createdAt: "2023-08-18T06:13:19.292Z",
+    updatedAt: "2023-08-18T06:13:19.292Z",
+    locationPhotos: [
+      {
+        photoLink:
+          "https://www.itourvn.com/images/easyblog_articles/914/Tay-Ho-district-in-Hanoi.jpg",
+        rarity: 3,
+        author: "",
+      },
+      {
+        photoLink:
+          "https://www.itourvn.com/images/easyblog_articles/914/Tay-Ho-district-in-Hanoi.jpg",
+        rarity: 3,
+        author: "",
+      },
+    ],
   },
   {
-    _id: "64de27ceb98594a86147eed6",
-    collectionId: "64de27ceb98594a86147eec9",
+    _id: "64df0bfffbad8ec093352dee",
+    collectionId: "64df0bfffbad8ec093352de1",
     collectionName: "vietnam collection",
-    nationId: "64de27ceb98594a86147eecc",
+    nationId: "64df0bfffbad8ec093352de4",
     name: "Sam Son Beach",
     address: "Thanh Hoa, Ha Noi",
     longitude: 105.90795198485591,
@@ -162,33 +190,41 @@ export const DATA = [
     nftMintedCount: 40,
     isDeleted: false,
     __v: 0,
-    createdAt: "2023-08-17T13:59:42.897Z",
-    updatedAt: "2023-08-17T13:59:42.897Z",
-    photoLink:
-      "https://vietnamtrips.com/files/photos/article1147/sam-son-1.jpg",
-    photoRarity: 5,
-    photoAuthor: "",
+    createdAt: "2023-08-18T06:13:19.292Z",
+    updatedAt: "2023-08-18T06:13:19.292Z",
+    locationPhotos: [
+      {
+        photoLink:
+          "https://vietnamtrips.com/files/photos/article1147/sam-son-1.jpg",
+        rarity: 5,
+        author: "",
+      },
+    ],
   },
   {
-    _id: "64de27ceb98594a86147eed6",
-    collectionId: "64de27ceb98594a86147eec9",
+    _id: "64df0bfffbad8ec093352dec",
+    collectionId: "64df0bfffbad8ec093352de1",
     collectionName: "vietnam collection",
-    nationId: "64de27ceb98594a86147eecc",
-    name: "Sam Son Beach",
-    address: "Thanh Hoa, Ha Noi",
-    longitude: 105.90795198485591,
-    latitude: 19.74604365520222,
+    nationId: "64df0bfffbad8ec093352de5",
+    name: "Tokyo Sky Tree",
+    address: "Tokyo, Japan",
+    longitude: 139.81074331240245,
+    latitude: 35.71014978864685,
     radius: 2000,
     description: "",
     shortDescription: "",
-    nftMintedCount: 40,
+    nftMintedCount: 30,
     isDeleted: false,
     __v: 0,
-    createdAt: "2023-08-17T13:59:42.897Z",
-    updatedAt: "2023-08-17T13:59:42.897Z",
-    photoLink:
-      "https://vietnamtrips.com/files/photos/article1147/sam-son-1.jpg",
-    photoRarity: 5,
-    photoAuthor: "",
+    createdAt: "2023-08-18T06:13:19.292Z",
+    updatedAt: "2023-08-18T06:13:19.292Z",
+    locationPhotos: [
+      {
+        photoLink:
+          "https://cdn.cheapoguides.com/wp-content/uploads/sites/2/2020/02/GettyImages-478125515.jpg",
+        rarity: 1,
+        author: "",
+      },
+    ],
   },
 ];
