@@ -17,62 +17,36 @@ import { Carousel } from "react-responsive-carousel";
 import { CloseIcon, GroupIcon, SuccessIcon } from "../icons";
 import { useWindowSize } from "../hooks/useWindownSize";
 import { StatusMint } from "../components/StatusMint";
+import { useAuthContext } from "../context/AuthContext";
+import { useWallet } from "@solana/wallet-adapter-react";
 
 function Details() {
   const wallet = useAnchorWallet();
+  const walletAddress = useWallet();
+  const { coordsNow, getLocationDetail, locationDetail } = useAuthContext();
   const apiKey = "a9477f3d-7bd1-4706-bce1-32deb0744759";
   const connectionString = `https://rpc-devnet.helius.xyz?api-key=${apiKey}`;
 
   const [openMintDrawer, setOpenMintDrawer] = useState(false);
-  const [test, setTest] = useState(false);
-
-  const [coordsNow, setCoordsNow] = useState({ lng: 0, lat: 0 });
   const [distance, setDistance] = useState(0);
+  const [address, setAddress] = useState("");
 
   const { width } = useWindowSize();
   const { id } = useParams();
-  const dataDetail = DATA.find((item) => item._id === id);
 
   const { status, Icon, label, title } = useMemo(() => {
-    return getStatusLocation(distance, dataDetail?.radius);
-  }, [distance, dataDetail]);
+    return getStatusLocation(distance, locationDetail?.radius);
+  }, [distance, locationDetail]);
 
-  useEffect(() => {
-    if (dataDetail && coordsNow) {
-      const distance = getDistance(
-        coordsNow.lat,
-        coordsNow.lng,
-        dataDetail.latitude,
-        dataDetail.longitude
-      );
-      setDistance(distance);
+  const handleGetWalletAddress = () => {
+    if (walletAddress.publicKey) {
+      setAddress(walletAddress.publicKey?.toString());
     }
-  }, [dataDetail, coordsNow]);
-
-  useEffect(() => {
-    navigator.geolocation.getCurrentPosition(
-      ({ coords: { longitude, latitude } }) => {
-        setTest(true);
-        setCoordsNow({ lng: longitude, lat: latitude });
-      }
-    );
-  }, []);
+  };
 
   const onCloseMintDrawer = () => {
     setOpenMintDrawer(false);
   };
-
-  const sliderImages = [
-    {
-      url: "https://s3-alpha-sig.figma.com/img/4d4a/e080/49d5c8d73193f3aafec14997243ee699?Expires=1692576000&Signature=IKyT7zCKSUek7nruWND8e45u-phR68qEvveG5jABH3o7oRJHwflcuO03eu30raO5CH4KXV89JbAbWOYYffxLnb6LFS3UKpUUo7wjIvUGjyELNOazDu-hQ1cnyYxkV24CVcpSZKYXEvl2WyDBreHqiUgLkEnHSFYILspExe-oMuIgZE0DRuAzfINcDlZHSb4CdWlCzmLbRkIoYocbjWuLA0IE~lIXxJeAubjEZ-t5epqKfBy0msv5qeg56JMVpOrRnG0xywNI71p7hSFofu~cbFgCbC051Cu8sYli4Di5TPekiqDlXJRYF2OHu8eNUVJuTCPCEVphOuPokU6aX4S5Vw__&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4",
-    },
-    {
-      url: "https://media.istockphoto.com/id/525833203/photo/view-over-hanoi-vietnam.jpg?s=612x612&w=0&k=20&c=KzTspCmcSQHAfpK9nGBVRrrZnvbPUS9EfB6cW09JS04=",
-    },
-    {
-      url: "https://media.istockphoto.com/id/481045024/photo/tran-quoc-pagoda.jpg?s=612x612&w=0&k=20&c=dmOYsZ05smQHjQl0HFY5Ll6cbD9lS6uKoxfzzvzv6gE=",
-    },
-  ];
 
   const handleClick = async () => {
     setOpenMintDrawer(true);
@@ -128,6 +102,28 @@ function Details() {
     }
   };
 
+  useEffect(() => {
+    handleGetWalletAddress();
+  }, [walletAddress]);
+
+  useEffect(() => {
+    if (locationDetail && coordsNow) {
+      const distance = getDistance(
+        coordsNow.lat,
+        coordsNow.log,
+        locationDetail.latitude,
+        locationDetail.longitude
+      );
+      setDistance(distance);
+    }
+  }, [locationDetail, coordsNow]);
+
+  useEffect(() => {
+    if (id) {
+      getLocationDetail(id);
+    }
+  }, [id]);
+
   return (
     <>
       <div className="w-full h-auto bg-gradient-to-r from-green-400 to-green-100 px-[16px] pt-[10px] pb-[1px] relative">
@@ -162,11 +158,11 @@ function Details() {
               </div>
 
               <div className="mt-3 text-[34px] font-bold font-sans">
-                {dataDetail?.name}
+                {locationDetail?.name}
               </div>
               <div className="mt-3 flex text-xs font-medium">
-                <p>{`${dataDetail?.address} • ${formatNumber(
-                  dataDetail?.nftMintedCount
+                <p>{`${locationDetail?.address} • ${formatNumber(
+                  locationDetail?.nftMintedCount
                 )} minted`}</p>
               </div>
             </div>
@@ -185,7 +181,9 @@ function Details() {
                 height: 335,
               }}
             >
-              {test && <Map data={dataDetail!} coordsNow={coordsNow} />}
+              {coordsNow && (
+                <Map data={locationDetail!} coordsNow={coordsNow} />
+              )}
             </div>
           </div>
           <div className="grid grid-cols-1 gap-[24px] items-start sm:grid-cols-2 ">
@@ -197,8 +195,8 @@ function Details() {
                 showStatus={false}
                 showThumbs={false}
               >
-                {sliderImages.map((currentSlide, index) => (
-                  <img src={currentSlide.url} alt="" key={index} />
+                {locationDetail?.locationPhotos?.map((currentSlide, index) => (
+                  <img src={currentSlide.photoLink} alt="" key={index} />
                 ))}
               </Carousel>
             </div>

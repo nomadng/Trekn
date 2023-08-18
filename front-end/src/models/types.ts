@@ -15,7 +15,11 @@ export interface CardDetail {
     __v: number,
     createdAt: string,
     updatedAt: string,
+    locationPhotos: Array<ILocationPhotos>,
+}
+
+interface ILocationPhotos {
     photoLink: string,
-    photoRarity: number,
-    photoAuthor: string,
+    rarity: number,
+    author: string
 }
