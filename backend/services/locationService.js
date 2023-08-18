@@ -1,6 +1,7 @@
+import mongoose from 'mongoose'
 import { PAGINATION_SETTING, SORT_DIRECTION } from '@root/utils/constants'
 import { configPaginationAggregate, escapeStringRegexp } from '@root/utils/common'
-import { getAllLocations } from '@root/repositories/locationRepository'
+import { findLocationWithAggregateQuery } from '@root/repositories/locationRepository'
 
 export const getListLocations = async (req) => {
   const { size, page } = req.body
@@ -21,10 +22,17 @@ export const getListLocations = async (req) => {
   }
 }
 
+export const getLocationInfo = async (req) => {
+  const { locationId, photoLink } = req.body
+  const aggregateQuery = buildLocationDetailAggregateQuery(locationId, photoLink)
+  const results = await findLocationWithAggregateQuery(aggregateQuery)
+  return results && results.length > 0 ? results[0] : {}
+}
+
 const getLocationsByFilters = async (filters) => {
   const query = buildLocationQuery(filters)
   const aggregateQuery = buildLocationAggregateQuery(query)
-  const results = await getAllLocations(aggregateQuery)
+  const results = await findLocationWithAggregateQuery(aggregateQuery)
   const { totalLocations, locations } = results[0]
   return {
     locations,
@@ -130,5 +138,49 @@ const buildLocationAggregateQuery = (query) => {
     },
   ]
 
+  return aggregateQuery
+}
+
+const buildLocationDetailAggregateQuery = (locationId, photoLink) => {
+  const aggregateQuery = [
+    {
+      $match: { _id: new mongoose.Types.ObjectId(locationId) },
+    },
+    {
+      $lookup: {
+        from: 'locationphotos',
+        let: {
+          photoLink,
+        },
+        pipeline: [
+          {
+            $match: {
+              $expr: {
+                $eq: ['$photoLink', '$$photoLink'],
+              },
+            },
+          },
+          {
+            $project: {
+              _id: 0,
+              photoLink: 1,
+              rarity: 1,
+              author: 1,
+            },
+          },
+        ],
+        as: 'photos',
+      },
+    },
+    { $unwind: '$photos' },
+    {
+      $set: {
+        photoLink: '$photos.photoLink',
+        photoRarity: '$photos.rarity',
+        photoAuthor: '$photos.author',
+      },
+    },
+    { $unset: 'photos' },
+  ]
   return aggregateQuery
 }
