@@ -20,6 +20,10 @@ const Location = new mongoose.Schema(
       type: String,
       require: true,
     },
+    cityName: {
+      type: String,
+      require: true,
+    },
     longitude: {
       type: Number,
       require: true,
