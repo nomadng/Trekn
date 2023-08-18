@@ -49,6 +49,7 @@ const buildLocationQuery = (filters) => {
       $or: [
         { name: new RegExp(escapeStringRegexp(filters.search), 'i') },
         { address: new RegExp(escapeStringRegexp(filters.search), 'i') },
+        { cityName: new RegExp(escapeStringRegexp(filters.search), 'i') }
       ],
     }
     query.filters = {
