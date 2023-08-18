@@ -33,7 +33,7 @@ export const mintNft = async (req) => {
   if (!collectionInfo) {
     throw new BaseError(new Error(LOCATION_NOT_FOUND), LOCATION_NOT_FOUND, HTTP_CONSTANTS.HTTP_STATUS_BAD_REQUEST)
   }
-
+  
   const base64Transaction = await createTrxMintCompressedNft(
     createMintcNFTProps({
       userPubkeyString: address,
