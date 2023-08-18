@@ -1,3 +1,5 @@
+import { isValidObjectId } from 'mongoose'
+
 export const omitField = (obj, ...props) => {
   const result = { ...obj }
   props.forEach((prop) => {
@@ -9,3 +11,5 @@ export const omitField = (obj, ...props) => {
 export const escapeStringRegexp = (string) => string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
 
 export const configPaginationAggregate = (skip, limit) => [{ $skip: skip }, { $limit: limit }]
+
+export const isValidMongoId = (id) => isValidObjectId(id)
