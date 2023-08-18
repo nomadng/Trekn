@@ -14,7 +14,6 @@ export const middleware01 = (req, res, next) => {
 export const middleware02 = (req, res, next) => {
   const params = { ...req.body }
   const rules = {
-    photoLink: 'required|string',
     locationId: 'required|string',
   }
   requestParamsValidator(params, rules)

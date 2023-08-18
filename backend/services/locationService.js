@@ -23,8 +23,8 @@ export const getListLocations = async (req) => {
 }
 
 export const getLocationInfo = async (req) => {
-  const { locationId, photoLink } = req.body
-  const aggregateQuery = buildLocationDetailAggregateQuery(locationId, photoLink)
+  const { locationId } = req.body
+  const aggregateQuery = buildLocationDetailAggregateQuery(locationId)
   const results = await findLocationWithAggregateQuery(aggregateQuery)
   return results && results.length > 0 ? results[0] : {}
 }
@@ -98,18 +98,9 @@ const buildLocationAggregateQuery = (query) => {
             },
           },
         ],
-        as: 'photos',
+        as: 'locationPhotos',
       },
     },
-    { $unwind: '$photos' },
-    {
-      $set: {
-        photoLink: '$photos.photoLink',
-        photoRarity: '$photos.rarity',
-        photoAuthor: '$photos.author',
-      },
-    },
-    { $unset: 'photos' },
     {
       $sort: query.sort,
     },
@@ -141,7 +132,7 @@ const buildLocationAggregateQuery = (query) => {
   return aggregateQuery
 }
 
-const buildLocationDetailAggregateQuery = (locationId, photoLink) => {
+const buildLocationDetailAggregateQuery = (locationId) => {
   const aggregateQuery = [
     {
       $match: { _id: new mongoose.Types.ObjectId(locationId) },
@@ -150,13 +141,13 @@ const buildLocationDetailAggregateQuery = (locationId, photoLink) => {
       $lookup: {
         from: 'locationphotos',
         let: {
-          photoLink,
+          locationId: { $toString: '$_id' },
         },
         pipeline: [
           {
             $match: {
               $expr: {
-                $eq: ['$photoLink', '$$photoLink'],
+                $eq: ['$locationId', '$$locationId'],
               },
             },
           },
@@ -169,18 +160,9 @@ const buildLocationDetailAggregateQuery = (locationId, photoLink) => {
             },
           },
         ],
-        as: 'photos',
+        as: 'locationPhotos',
       },
     },
-    { $unwind: '$photos' },
-    {
-      $set: {
-        photoLink: '$photos.photoLink',
-        photoRarity: '$photos.rarity',
-        photoAuthor: '$photos.author',
-      },
-    },
-    { $unset: 'photos' },
   ]
   return aggregateQuery
 }
