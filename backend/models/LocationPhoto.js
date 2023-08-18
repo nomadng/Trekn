@@ -9,6 +9,9 @@ const LocationPhoto = new mongoose.Schema(
     photoLink: {
       type: String,
     },
+    nftMetadataUri: {
+      type: String,
+    },
     rarity: {
       type: Number,
     },

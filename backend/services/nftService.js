@@ -1,6 +1,8 @@
 import { randomRarityNFT } from '@root/utils/randomRarity'
 import { createTrxMintCompressedNft } from '../utils/mintcNFT'
-import { createMintcNFTProps } from '../utils/createMintcNFTProps'
+import { HTTP_CONSTANTS, createMintcNFTProps } from '../utils/createMintcNFTProps'
+import { LOCATION_NOT_FOUND, LOCATION_PHOTO_NOT_FOUND } from '@root/utils/responseMsg'
+import { BaseError } from '@root/utils/baseError'
 
 export const mintNft = async (req) => {
   const { address, locationId, userPubkey } = req.body
@@ -11,7 +13,17 @@ export const mintNft = async (req) => {
     rarity,
     locationId,
   })
+  if (!locationPhotoInfo) {
+    throw new BaseError(
+      new Error(LOCATION_PHOTO_NOT_FOUND),
+      LOCATION_PHOTO_NOT_FOUND,
+      HTTP_CONSTANTS.HTTP_STATUS_BAD_REQUEST
+    )
+  }
   const locationInfo = await findLocationById(locationId)
+  if (!locationInfo) {
+    throw new BaseError(new Error(LOCATION_NOT_FOUND), LOCATION_NOT_FOUND, HTTP_CONSTANTS.HTTP_STATUS_BAD_REQUEST)
+  }
 
   const treeAddressString = ''
   const collectionMintString = ''
