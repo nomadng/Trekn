@@ -33,8 +33,15 @@ export const createMintCompressNFTProps = ({
   const serverKeypair = Keypair.fromSecretKey(decodedSecretKey)
 
   const nftArgs = {
+    symbol: 'cNFT',
+    name: 'Compressed NFT',
     uri: uriMetadata,
-    creators: [],
+    creators: [
+      {
+        address: userPubkey,
+        share: 100,
+      },
+    ],
     editionNonce: 253,
     tokenProgramVersion: TokenProgramVersion.Original,
     tokenStandard: TokenStandard.NonFungible,
