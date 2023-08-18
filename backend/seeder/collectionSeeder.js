@@ -17,3 +17,5 @@ export const collectionSeeder = async () => {
   })
   await collection.save()
 }
+
+export const getAllCollections = async () => Collection.find().lean()
