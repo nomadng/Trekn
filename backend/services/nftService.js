@@ -7,6 +7,12 @@ export const mintNft = async (req) => {
 
   // Step 1: Random rarity
   const rarity = randomRarityNFT()
+  const locationPhotoInfo = await randomLocationPhotoByConditions({
+    rarity,
+    locationId,
+  })
+  const locationInfo = await findLocationById(locationId)
+
   const treeAddressString = ''
   const collectionMintString = ''
   const collectionMetadataAccountString = ''
@@ -20,4 +26,14 @@ export const mintNft = async (req) => {
       collectionMasterEditionAccountString,
     })
   )
+
+  return {
+    name: locationInfo.name,
+    collectionName: locationInfo.collectionName,
+    rarity: locationPhotoInfo.rarity,
+    photoLink: locationPhotoInfo.photoLink,
+    description: locationInfo.description,
+    author: locationPhotoInfo.author,
+    session: NFT_ATTRIBUTE_SEASON,
+  }
 }
