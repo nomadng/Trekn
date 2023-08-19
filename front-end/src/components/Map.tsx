@@ -9,7 +9,7 @@ function Map({ data, coordsNow }: MapProps) {
       {data?._id && (
         <GoogleMapReact
           bootstrapURLKeys={{ key: REACT_APP_MAP_API }}
-          defaultZoom={13}
+          defaultZoom={15}
           defaultCenter={{
             lat: data?.latitude,
             lng: data?.longitude,

@@ -1,79 +1,96 @@
-import React, { useEffect, useMemo, useState } from "react";
-import { Button, Drawer, Modal, Slider } from "antd";
-import { CloseOutlined } from "@ant-design/icons";
-import { WrappedConnection } from "../functions/wrappedConnection";
-import { Transaction } from "@solana/web3.js";
+import React, { ReactNode, useEffect, useMemo, useState } from "react";
+import { Button, Slider } from "antd";
+import { Connection, Transaction, clusterApiUrl } from "@solana/web3.js";
 import { useAnchorWallet } from "@solana/wallet-adapter-react";
 import Map from "../components/Map";
 import { useParams } from "react-router";
-import {
-  formatNumber,
-  getDistance,
-  getStatusLocation,
-} from "../utils/common.utils";
-import axios from "axios";
+import { formatNumber, getStatusLocation } from "../utils/common.utils";
 import { Carousel } from "react-responsive-carousel";
-import { CloseIcon, GroupIcon, SuccessIcon } from "../icons";
+import { CloseIcon, GroupIcon } from "../icons";
 import { useWindowSize } from "../hooks/useWindownSize";
-import { StatusMint } from "../components/StatusMint";
 import { useAuthContext } from "../context/AuthContext";
 import { useWallet } from "@solana/wallet-adapter-react";
+import { PopupMint } from "../components/PopupMint";
+import { WalletMultiButton } from "@solana/wallet-adapter-react-ui";
+import request from "../axios";
 
 function Details() {
   const wallet = useAnchorWallet();
   const walletAddress = useWallet();
   const { coordsNow, getLocationDetail, locationDetail } = useAuthContext();
-  const apiKey = "a9477f3d-7bd1-4706-bce1-32deb0744759";
-  const connectionString = `https://rpc-devnet.helius.xyz?api-key=${apiKey}`;
 
   const [openMintDrawer, setOpenMintDrawer] = useState(false);
-  const [distance, setDistance] = useState(0);
-  const [address, setAddress] = useState("");
+  const [statusMint, setStatusMint] = useState("minting");
+  const [photoLinkMintSuccess, setPhotoLinkMintSuccess] = useState("");
+  const [isShowMore, setIsShowMore] = useState(false);
+  const [actionButton, setActionButton] = useState<ReactNode>();
+  const [isShowSlider, setShowSlider] = useState(true);
 
   const { width } = useWindowSize();
   const { id } = useParams();
 
-  const { status, Icon, label, title } = useMemo(() => {
-    return getStatusLocation(distance, locationDetail?.radius);
-  }, [distance, locationDetail]);
+  const { Icon, label, title } = useMemo(() => {
+    return getStatusLocation(locationDetail?.distance, locationDetail?.radius);
+  }, [locationDetail]);
 
-  const handleGetWalletAddress = () => {
+  const handleClick = async () => {
     if (walletAddress.publicKey) {
-      setAddress(walletAddress.publicKey?.toString());
+      const res = await request.post("nft/mint", {
+        address: walletAddress.publicKey?.toString(),
+        locationId: id,
+      });
+      if (res.status === 200) {
+        handleMint(res.data);
+      } else {
+        setOpenMintDrawer(true);
+        setStatusMint("mintFailed");
+        setPhotoLinkMintSuccess("./metal-coin.png");
+      }
+    } else {
+      setOpenMintDrawer(true);
+      setStatusMint("connectWallet");
+      setActionButton(
+        <WalletMultiButton
+          startIcon={undefined}
+          style={{
+            width: 106,
+            height: 40,
+            backgroundColor: "white",
+            color: "#00A868",
+            fontSize: 12,
+            borderRadius: 24,
+            fontWeight: "bold",
+            justifyContent: "center",
+            paddingRight: 35,
+            alignItems: "center",
+            border: "1px solid #00A868",
+          }}
+        />
+      );
     }
   };
 
-  const onCloseMintDrawer = () => {
-    setOpenMintDrawer(false);
-  };
-
-  const handleClick = async () => {
+  const handleMint = async (data: IMintTransactionData) => {
     setOpenMintDrawer(true);
     try {
       if (wallet) {
-        const collection = {
-          userPubkey: wallet.publicKey.toString(),
-        };
+        console.log(1);
 
-        const response = await axios.post(
-          "http://localhost:8080/api/mint-cnft",
-          collection
-        );
+        const transactionBuffer = Buffer.from(data.transaction, "base64");
 
-        const transactionBuffer = Buffer.from(
-          response.data.transaction,
-          "base64"
-        );
+        console.log("transactionBuffer", transactionBuffer);
 
-        const connectionWrapper = new WrappedConnection(
-          wallet,
-          connectionString
-        );
+        const connection = new Connection(clusterApiUrl("devnet"));
+
+        console.log("connection", connection);
 
         const transaction = Transaction.from(transactionBuffer);
-        const { lastValidBlockHeight } =
-          await connectionWrapper.getLatestBlockhash();
+
+        console.log("transaction", transaction);
+
+        const { lastValidBlockHeight } = await connection.getLatestBlockhash();
         transaction.lastValidBlockHeight = lastValidBlockHeight;
+        console.log(2);
 
         const tx = await wallet.signTransaction(transaction);
         const serialized = tx.serialize({
@@ -81,17 +98,40 @@ function Details() {
           verifySignatures: true,
         });
 
+        console.log(3);
+
         try {
-          const signature = await connectionWrapper.sendEncodedTransaction(
+          const signature = await connection.sendEncodedTransaction(
             serialized.toString("base64"),
             {
               maxRetries: 5,
               skipPreflight: true,
             }
           );
+          console.log(4);
 
-          return signature;
+          if (signature) {
+            setOpenMintDrawer(true);
+            setStatusMint("mintSuccess");
+            setPhotoLinkMintSuccess(data.photoLink);
+            setActionButton(
+              <Button className="w-full rounded-[24px] bg-black text-white">
+                Share to socials
+              </Button>
+            );
+          }
         } catch (e) {
+          setOpenMintDrawer(true);
+          setStatusMint("mintFailed");
+          setPhotoLinkMintSuccess("./metal-coin.png");
+          setActionButton(
+            <Button
+              className="w-full rounded-[24px] bg-black text-white"
+              onClick={() => setOpenMintDrawer(false)}
+            >
+              Retry
+            </Button>
+          );
           console.error("Failed to mint compressed NFT", e);
           throw e;
         }
@@ -102,43 +142,32 @@ function Details() {
   };
 
   useEffect(() => {
-    handleGetWalletAddress();
-  }, [walletAddress]);
-
-  useEffect(() => {
-    if (locationDetail && coordsNow) {
-      const distance = getDistance(
-        coordsNow.lat,
-        coordsNow.log,
-        locationDetail.latitude,
-        locationDetail.longitude
-      );
-      setDistance(distance);
-    }
-  }, [locationDetail, coordsNow]);
-
-  useEffect(() => {
     if (id) {
       getLocationDetail(id);
     }
-  }, [id]);
+  }, [coordsNow, id]);
 
   return (
     <>
-      <div className="w-full h-auto bg-gradient-to-r from-green-400 to-green-100 px-[16px] pt-[10px] pb-[1px] relative">
-        <p className="text-[12px] font-medium">
-          Enjoy zero-fee mint for the first 100,000 cNFT
-        </p>
-        <Slider
-          min={0}
-          max={100000}
-          value={3000}
-          handleStyle={{ display: "none" }}
-          trackStyle={{ background: "black" }}
-          railStyle={{ background: "white" }}
-        />
-        <CloseIcon className="absolute top-[4px] right-[4px] cursor-pointer" />
-      </div>
+      {isShowSlider && (
+        <div className="w-full h-auto bg-gradient-to-r from-green-400 to-green-100 px-[16px] pt-[10px] pb-[1px] relative">
+          <p className="text-[12px] font-medium">
+            Enjoy zero-fee mint for the first 100,000 cNFT
+          </p>
+          <Slider
+            min={0}
+            max={100000}
+            value={3000}
+            handleStyle={{ display: "none" }}
+            trackStyle={{ background: "black" }}
+            railStyle={{ background: "white" }}
+          />
+          <CloseIcon
+            className="absolute top-[4px] right-[4px] cursor-pointer"
+            onClick={() => setShowSlider(false)}
+          />
+        </div>
+      )}
       <div className="w-auto mb-[88px] px-[20px] sm:px-0">
         <div
           style={{
@@ -199,25 +228,34 @@ function Details() {
             </div>
 
             <div>
-              <div className="text-base text-[#71717A] w-[100%] mb-3">
-                According to the legend, after defeating the Ming China, Emperor
-                Lê Lợi was boating on the lake when a Golden Turtle God (Kim
-                Qui) surfaced and asked for his magic sword, Heaven's Will.
-                <br />
-                <br />
-                Lợi concluded that Kim Qui had come to reclaim the sword that
-                its master, a local ...
-              </div>
-
-              <div className="flex w-full font-semibold text-base	text-[#00A868] mb-10">
-                View more
-              </div>
+              {locationDetail?.description?.length < 70 ? (
+                <div className="text-base text-[#71717A] w-[100%] mb-3">
+                  {locationDetail?.description}
+                </div>
+              ) : (
+                <>
+                  <div
+                    className={`text-base text-[#71717A] w-[100%] mb-3 ${
+                      !isShowMore && "line-clamp-6"
+                    }`}
+                  >
+                    {locationDetail?.description}
+                  </div>
+                  {!isShowMore && locationDetail?.description && (
+                    <div
+                      className="flex w-full font-semibold text-base	text-[#00A868] mb-10 cursor-pointer"
+                      onClick={() => setIsShowMore(true)}
+                    >
+                      View more
+                    </div>
+                  )}
+                </>
+              )}
 
               <div className="w-full mb-12">
                 <Button
                   className="h-12 rounded-3xl w-full flex items-center justify-center text-base font-bold bg-black text-white mb-[12px]"
                   onClick={() => handleClick()}
-                  disabled={status === "readyToMint" ? false : true}
                 >
                   Mint proof
                 </Button>
@@ -232,54 +270,26 @@ function Details() {
           </div>
         </div>
       </div>
-      {width >= 600 ? (
-        <Modal
-          title={
-            <div className="flex items-center">
-              <SuccessIcon />
-              <div className="text-2xl font-bold ml-[10px]">
-                Minted successfull
-              </div>
-            </div>
-          }
-          open={openMintDrawer}
-          okText={""}
-          width={508}
-          footer={null}
-          onCancel={() => setOpenMintDrawer(false)}
-        >
-          <StatusMint />
-        </Modal>
-      ) : (
-        <Drawer
-          title={
-            <div className="flex items-center">
-              <SuccessIcon />
-              <div className="text-2xl font-bold ml-[10px]">
-                Minted successfull
-              </div>
-            </div>
-          }
-          className="rounded-t-3xl"
-          placement={"bottom"}
-          closable={false}
-          height={560}
-          onClose={onCloseMintDrawer}
-          open={openMintDrawer}
-          extra={
-            <div
-              className="w-7 h-7 bg-[#F2F2F7] flex justify-center items-center rounded-full z-50 cursor-pointer"
-              onClick={() => setOpenMintDrawer(false)}
-            >
-              <CloseOutlined />
-            </div>
-          }
-        >
-          <StatusMint />
-        </Drawer>
-      )}
+      <PopupMint
+        status={statusMint}
+        isOpenPopup={openMintDrawer}
+        onClosePopup={() => setOpenMintDrawer(false)}
+        linkPhoto={photoLinkMintSuccess}
+        buttonAction={actionButton}
+      />
     </>
   );
 }
 
 export default Details;
+
+interface IMintTransactionData {
+  transaction: string;
+  name: string;
+  collectionName: string;
+  rarity: number;
+  photoLink: string;
+  description: string;
+  author: string;
+  session: number;
+}
