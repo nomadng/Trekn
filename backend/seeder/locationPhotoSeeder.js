@@ -14,7 +14,7 @@ export const locationPhotoSeeder = async () => {
       rarity: 1,
       author: 'Trekn',
       isDeleted: false,
-    },g
+    },
     {
       _id: '64df46f60642a2cf9e820a21',
       locationId: '64df406b4e7c0cc745c74f7c',
