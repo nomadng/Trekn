@@ -7,6 +7,8 @@ import {
 } from "react";
 import { CardDetail } from "../models/types";
 import request from "../axios";
+import { useParams } from "react-router";
+import { useLocation } from "react-router";
 
 export const AuthContext = createContext({} as AuthContextProps);
 export const useAuthContext = () => useContext(AuthContext);
@@ -15,6 +17,9 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   const [coordsNow, setCoordsNow] = useState({} as ICoords);
   const [listLocation, setListLocation] = useState([] as Array<CardDetail>);
   const [locationDetail, setLocationDetail] = useState({} as CardDetail);
+  const { id } = useParams();
+
+  const routerLocation = useLocation();
 
   const handleGetListLocation = async (valueSearch = "") => {
     const res = await request.post("location/list", { search: valueSearch });
@@ -42,7 +47,11 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         setCoordsNow({ log: longitude, lat: latitude });
       }
     );
-  }, []);
+  }, [id]);
+
+  useEffect(() => {
+    setLocationDetail({} as CardDetail);
+  }, [routerLocation]);
 
   return (
     <AuthContext.Provider
