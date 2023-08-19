@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { ReactNode, useEffect, useMemo, useState } from "react";
 import { Button, Slider } from "antd";
 import { Connection, Transaction, clusterApiUrl } from "@solana/web3.js";
@@ -29,16 +30,23 @@ function Details() {
   const { width } = useWindowSize();
   const { id } = useParams();
 
+  const { status } = useMemo(() => {
+    return getStatusLocation(locationDetail?.distance, locationDetail?.radius);
+  }, [locationDetail]);
+
   const { Icon, label, title } = useMemo(() => {
     return getStatusLocation(locationDetail?.distance, locationDetail?.radius);
   }, [locationDetail]);
 
   const handleClick = async () => {
+    setOpenMintDrawer(true);
+    setStatusMint("minting");
     if (walletAddress.publicKey) {
       const res = await request.post("nft/mint", {
         address: walletAddress.publicKey?.toString(),
         locationId: id,
       });
+
       if (res.status === 200) {
         handleMint(res.data);
       } else {
@@ -53,15 +61,14 @@ function Details() {
         <WalletMultiButton
           startIcon={undefined}
           style={{
-            width: 106,
+            width: "100%",
             height: 40,
-            backgroundColor: "white",
-            color: "#00A868",
+            backgroundColor: "black",
+            color: "white",
             fontSize: 12,
             borderRadius: 24,
             fontWeight: "bold",
             justifyContent: "center",
-            paddingRight: 35,
             alignItems: "center",
             border: "1px solid #00A868",
           }}
@@ -71,11 +78,8 @@ function Details() {
   };
 
   const handleMint = async (data: IMintTransactionData) => {
-    setOpenMintDrawer(true);
     try {
-      if (wallet) {
-        console.log(1);
-
+      if (wallet && data.transaction) {
         const transactionBuffer = Buffer.from(data.transaction, "base64");
 
         console.log("transactionBuffer", transactionBuffer);
@@ -145,7 +149,7 @@ function Details() {
     if (id) {
       getLocationDetail(id);
     }
-  }, [coordsNow, id]);
+  }, [id, coordsNow]);
 
   return (
     <>

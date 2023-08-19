@@ -1,3 +1,5 @@
+/* eslint-disable array-callback-return */
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useEffect, useState } from "react";
 import { Input } from "antd";
 import { ListDetail } from "../components/ListDetail";
@@ -27,7 +29,6 @@ function Home() {
 
   useEffect(() => {
     getListLocation(valueFilter);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [coordsNow, valueFilter]);
 
   useEffect(() => {

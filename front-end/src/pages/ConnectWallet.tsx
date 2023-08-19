@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useEffect } from "react";
 import { Button } from "antd";
 import { ListDetail } from "../components/ListDetail";
@@ -47,7 +48,7 @@ function ConnectWallet() {
             Popular minted locations
           </div>
           <ListDetail data={listLocation} />
-          <Button className="w-full h-12 rounded-3xl bg-[#00A868] text-white text-base font-semibold mb-12 sm:hidden">
+          <Button className="w-full h-12 rounded-3xl bg-[#00A868] text-white text-base font-semibold mb-12 sm:hidden mt-[25px]">
             Connect wallet to start explore
           </Button>
         </div>
