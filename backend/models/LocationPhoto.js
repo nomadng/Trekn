@@ -6,6 +6,9 @@ const LocationPhoto = new mongoose.Schema(
     locationId: {
       type: String,
     },
+    locationNumber: {
+      type: Number,
+    },
     photoLink: {
       type: String,
     },
