@@ -1,35 +1,15 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useMemo } from "react";
 import { useNavigate } from "react-router";
-import { getDistance, getStatusLocation } from "../utils/common.utils";
-import { CardDetail } from "../models/types";
+import { getStatusLocation } from "../utils/common.utils";
+import { LocationDetail } from "../models/types";
 import { Carousel } from "react-responsive-carousel";
 
 export const DetailCard = ({ data }: DetailCardProps) => {
   const navigate = useNavigate();
-  const [coordsNow, setCoordsNow] = useState({ log: 0, lat: 0 });
-  const [distance, setDistance] = useState(0);
 
   const { Icon, label, status } = useMemo(() => {
-    return getStatusLocation(distance, data?.radius);
-  }, [distance, data]);
-
-  useEffect(() => {
-    navigator.geolocation.getCurrentPosition(
-      ({ coords: { longitude, latitude } }) => {
-        setCoordsNow({ log: longitude, lat: latitude });
-      }
-    );
-  }, []);
-
-  useEffect(() => {
-    const distance = getDistance(
-      coordsNow.lat,
-      coordsNow.log,
-      data?.latitude,
-      data?.longitude
-    );
-    setDistance(distance);
-  }, [data, coordsNow]);
+    return getStatusLocation(data?.distance, data?.radius);
+  }, [data]);
 
   return (
     <div
@@ -75,5 +55,5 @@ export const DetailCard = ({ data }: DetailCardProps) => {
 };
 
 export interface DetailCardProps {
-  data: CardDetail;
+  data: LocationDetail;
 }

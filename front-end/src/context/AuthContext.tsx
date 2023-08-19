@@ -5,7 +5,7 @@ import {
   useEffect,
   useState,
 } from "react";
-import { CardDetail } from "../models/types";
+import { LocationDetail } from "../models/types";
 import request from "../axios";
 import { useParams } from "react-router";
 import { useLocation } from "react-router";
@@ -14,15 +14,24 @@ export const AuthContext = createContext({} as AuthContextProps);
 export const useAuthContext = () => useContext(AuthContext);
 
 export const AuthProvider = ({ children }: AuthProviderProps) => {
-  const [coordsNow, setCoordsNow] = useState({} as ICoords);
-  const [listLocation, setListLocation] = useState([] as Array<CardDetail>);
-  const [locationDetail, setLocationDetail] = useState({} as CardDetail);
+  const [coordsNow, setCoordsNow] = useState({ log: -1, lat: -1 } as ICoords);
+  const [listLocation, setListLocation] = useState([] as Array<LocationDetail>);
+  const [listLocationNearBy, setListLocationNearBy] = useState(
+    [] as Array<LocationDetail>
+  );
+  const [locationDetail, setLocationDetail] = useState({} as LocationDetail);
   const { id } = useParams();
 
   const routerLocation = useLocation();
 
   const handleGetListLocation = async (valueSearch = "") => {
-    const res = await request.post("location/list", { search: valueSearch });
+    const { log, lat } = coordsNow;
+    const res = await request.post("location/list", {
+      search: valueSearch,
+      longitude: log,
+      latitude: lat,
+      size: 100,
+    });
     if (res.status === 200) {
       const resData = res.data;
       setListLocation(resData.locations);
@@ -31,8 +40,28 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     }
   };
 
+  const handleGetListLocationNearBy = async () => {
+    const { log, lat } = coordsNow;
+    const res = await request.post("location/nearby", {
+      longitude: log,
+      latitude: lat,
+      size: 100,
+    });
+    if (res.status === 200) {
+      const resData = res.data;
+      setListLocationNearBy(resData.locations);
+    } else {
+      alert(res.data);
+    }
+  };
+
   const handleGetLocationDetail = async (locationId: string) => {
-    const res = await request.post("location/info", { locationId: locationId });
+    const { log, lat } = coordsNow;
+    const res = await request.post("location/info", {
+      locationId: locationId,
+      longitude: log,
+      latitude: lat,
+    });
     if (res.status === 200) {
       const resData = res.data;
       setLocationDetail(resData);
@@ -50,16 +79,18 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   }, [id]);
 
   useEffect(() => {
-    setLocationDetail({} as CardDetail);
+    setLocationDetail({} as LocationDetail);
   }, [routerLocation]);
 
   return (
     <AuthContext.Provider
       value={{
         coordsNow: coordsNow,
+        listLocationNearBy: listLocationNearBy,
         listLocation: listLocation,
         locationDetail: locationDetail,
         getListLocation: handleGetListLocation,
+        getListLocationNearBy: handleGetListLocationNearBy,
         getLocationDetail: handleGetLocationDetail,
       }}
     >
@@ -74,10 +105,12 @@ interface AuthProviderProps {
 
 interface AuthContextProps {
   coordsNow: ICoords;
-  listLocation: Array<CardDetail>;
-  locationDetail: CardDetail;
+  listLocationNearBy: Array<LocationDetail>;
+  listLocation: Array<LocationDetail>;
+  locationDetail: LocationDetail;
   getListLocation: (valueSearch?: string) => void;
   getLocationDetail: (locationId: string) => void;
+  getListLocationNearBy: () => void;
 }
 
 interface ICoords {

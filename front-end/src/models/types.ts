@@ -1,10 +1,11 @@
-export interface CardDetail {
+export interface LocationDetail {
     _id: string,
     collectionId: string,
     collectionName: string,
     nationId: string,
     name: string,
     address: string,
+    cityName: string,
     longitude: number,
     latitude: number,
     radius: number,
@@ -15,6 +16,7 @@ export interface CardDetail {
     __v: number,
     createdAt: string,
     updatedAt: string,
+    distance?: number ,
     locationPhotos: Array<ILocationPhotos>,
 }
 
@@ -23,3 +25,4 @@ interface ILocationPhotos {
     rarity: number,
     author: string
 }
+

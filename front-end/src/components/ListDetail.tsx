@@ -1,6 +1,6 @@
 import React, { useMemo, useState } from "react";
 import { DetailCard } from "./DetailCard";
-import { CardDetail } from "../models/types";
+import { LocationDetail } from "../models/types";
 
 export const ListDetail = ({ data }: ListDetailProps) => {
   const [amountShowItem, setAmountShowItem] = useState(3);
@@ -38,5 +38,5 @@ export const ListDetail = ({ data }: ListDetailProps) => {
 };
 
 interface ListDetailProps {
-  data: CardDetail[];
+  data: LocationDetail[];
 }

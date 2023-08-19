@@ -1,51 +1,38 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Input } from "antd";
 import { ListDetail } from "../components/ListDetail";
-import { getDistance, getStatusLocation } from "../utils/common.utils";
 import { DetailCard } from "../components/DetailCard";
-import { CardDetail } from "../models/types";
+import { LocationDetail } from "../models/types";
 import { SearchIcon } from "./../icons";
 import { useWindowSize } from "../hooks/useWindownSize";
 import { useAuthContext } from "../context/AuthContext";
 
 function Home() {
-  const { getListLocation, coordsNow, listLocation } = useAuthContext();
+  const {
+    getListLocation,
+    listLocation,
+    getListLocationNearBy,
+    listLocationNearBy,
+    coordsNow,
+  } = useAuthContext();
   const [valueFilter, setValueFilter] = useState("");
 
   const { width } = useWindowSize();
 
-  const dataPopular = useMemo(() => {
-    return (
-      listLocation && listLocation.filter((item) => item.nftMintedCount > 40)
-    );
-  }, [listLocation]);
-
-  const dataNearby = listLocation.filter((item) => {
-    const distance = getDistance(
-      coordsNow.lat,
-      coordsNow.log,
-      item.latitude,
-      item.longitude
-    );
-    const { status } = getStatusLocation(distance, item.radius);
-    return status === "nearBy";
-  });
-
   const dataReadyToMint = listLocation.find((item) => {
-    const distance = getDistance(
-      coordsNow.lat,
-      coordsNow.log,
-      item.latitude,
-      item.longitude
-    );
-    const { status } = getStatusLocation(distance, item.radius);
-    return status === "readyToMint";
+    if (item.distance) {
+      return item.distance <= 500;
+    }
   });
 
   useEffect(() => {
     getListLocation(valueFilter);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [valueFilter]);
+  }, [coordsNow, valueFilter]);
+
+  useEffect(() => {
+    getListLocationNearBy();
+  }, [coordsNow]);
 
   return (
     <div className="w-full px-[20px] sm:px-0">
@@ -82,19 +69,19 @@ function Home() {
           <>
             {dataReadyToMint && (
               <div className="mb-10">
-                <DetailCard data={dataReadyToMint as CardDetail} />
+                <DetailCard data={dataReadyToMint as LocationDetail} />
               </div>
             )}
             <div className="mb-10">
               <div className="text-base font-semibold">Nearby</div>
-              <ListDetail data={dataNearby} />
+              <ListDetail data={listLocationNearBy} />
             </div>
 
             <div className="mb-10">
               <div className="text-base font-semibold">
                 Popular minted locations
               </div>
-              <ListDetail data={dataPopular} />
+              <ListDetail data={listLocation} />
             </div>
           </>
         )}
