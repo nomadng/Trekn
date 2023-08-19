@@ -2518,10 +2518,10 @@ events@1.1.1:
   resolved "https://registry.npmjs.org/events/-/events-1.1.1.tgz"
   integrity sha512-kEcvvCBByWXGnZy6JUlgAp2gBIUjfCAV6P6TgT1/aaQKcmuAEC4OZTV1I4EWQLz2gxZw76atuVyvHhTxvi0Flw==
 
-express-rest-routerss@^1.0.6:
-  version "1.0.6"
-  resolved "https://registry.npmjs.org/express-rest-routerss/-/express-rest-routerss-1.0.6.tgz"
-  integrity sha512-aY6HDDRaOnZjFdwt1r4JaQzHLIqyXXU7f6cviITcM2qsnMGvFwfEK/zMHE3+qL5Yk8BEr6SPFgf5FaMglaDk3w==
+express-rest-routerss@1.0.1:
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/express-rest-routerss/-/express-rest-routerss-1.0.1.tgz#b82a102c30871e0af6fc097e06a87ad31166c745"
+  integrity sha512-G/t880N8JK83Da7OLgr1iQfLAc2RquSxjYdkVnALN0WSC28YGf8IAYRrPj/yDEKL/beHc3z1zM9V8LNW8kiUKQ==
   dependencies:
     express "^4.17.1"
     glob "^7.1.4"

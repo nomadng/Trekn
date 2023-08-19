@@ -29,6 +29,25 @@ export const getLocationInfo = async (req) => {
   return results && results.length > 0 ? results[0] : {}
 }
 
+export const getNearbyLocations = async (req) => {
+  const { size, page } = req.body
+  const params = {
+    ...req.body,
+    page: page || PAGINATION_SETTING.DEFAULT_PAGE,
+    size: size || PAGINATION_SETTING.PAGE_SIZE,
+  }
+  const { locations, totalItem } = await getNearbyLocationsByFilters(params)
+  return {
+    pagination: {
+      page: params.page,
+      size: params.size,
+      totalItem,
+      totalPage: Math.ceil(totalItem / params.size),
+    },
+    locations,
+  }
+}
+
 const getLocationsByFilters = async (filters) => {
   const query = buildLocationQuery(filters)
   const aggregateQuery = buildLocationAggregateQuery(query)
@@ -165,5 +184,106 @@ const buildLocationDetailAggregateQuery = (locationId) => {
       },
     },
   ]
+  return aggregateQuery
+}
+
+const getNearbyLocationsByFilters = async (filters) => {
+  const query = buildNearbyLocationQuery(filters)
+  const aggregateQuery = buildNearbyLocationAggregateQuery(query)
+  const results = await findLocationWithAggregateQuery(aggregateQuery)
+  const { totalLocations, locations } = results[0]
+  return {
+    locations,
+    totalItem: totalLocations,
+  }
+}
+
+const buildNearbyLocationQuery = (filters) => {
+  const query = {}
+  query.nearbyLocation = {
+    near: { type: 'Point', coordinates: [filters.longitude, filters.latitude] },
+    distanceField: 'distance',
+    spherical: true
+  }
+  query.filters = {}
+  if (filters.search) {
+    const searchCondition = {
+      $or: [
+        { name: new RegExp(escapeStringRegexp(filters.search), 'i') },
+        { address: new RegExp(escapeStringRegexp(filters.search), 'i') },
+        { cityName: new RegExp(escapeStringRegexp(filters.search), 'i') }
+      ],
+    }
+    query.filters = {
+      ...searchCondition,
+      ...query.filters,
+    }
+  }
+
+  query.limit = filters.size
+  query.skip = filters.size * filters.page - filters.size
+
+  return query
+}
+
+const buildNearbyLocationAggregateQuery = (query) => {
+  const aggregateQuery = [
+    {
+      $geoNear: query.nearbyLocation,
+    },
+    {
+      $match: query.filters,
+    },
+    {
+      $lookup: {
+        from: 'locationphotos',
+        let: {
+          locationId: { $toString: '$_id' },
+        },
+        pipeline: [
+          {
+            $match: {
+              $expr: {
+                $eq: ['$locationId', '$$locationId'],
+              },
+            },
+          },
+          {
+            $project: {
+              _id: 0,
+              photoLink: 1,
+              rarity: 1,
+              author: 1,
+            },
+          },
+        ],
+        as: 'locationPhotos',
+      },
+    },
+    {
+      $facet: {
+        totalLocations: [
+          {
+            $count: 'count',
+          },
+        ],
+        locations: [...configPaginationAggregate(query.skip, query.limit)],
+      },
+    },
+    {
+      $project: {
+        totalLocations: { $arrayElemAt: ['$totalLocations.count', 0] },
+        locations: 1,
+      },
+    },
+    {
+      $set: {
+        totalLocations: {
+          $cond: [{ $lte: ['$totalLocations', null] }, 0, '$totalLocations'],
+        },
+      },
+    },
+  ]
+
   return aggregateQuery
 }
