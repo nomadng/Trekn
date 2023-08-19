@@ -42,13 +42,17 @@ export const getLocationInfo = async (req) => {
 }
 
 export const getNearbyLocations = async (req) => {
-  const { size, page } = req.body
+  const { size, page, longitude: userLongitude, latitude: userLatitude } = req.body
   const params = {
     ...req.body,
     page: page || PAGINATION_SETTING.DEFAULT_PAGE,
     size: size || PAGINATION_SETTING.PAGE_SIZE,
   }
   const { locations, totalItem } = await getNearbyLocationsByFilters(params)
+  const locationWithDistance = locations.map((location) => ({
+    ...location,
+    distance: calculateDistance(userLatitude, userLongitude, location.latitude, location.longitude),
+  }))
   return {
     pagination: {
       page: params.page,
@@ -56,7 +60,7 @@ export const getNearbyLocations = async (req) => {
       totalItem,
       totalPage: Math.ceil(totalItem / params.size),
     },
-    locations,
+    locations: locationWithDistance,
   }
 }
 
