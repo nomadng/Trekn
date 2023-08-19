@@ -10,8 +10,8 @@ export const middleware01 = (req, res, next) => {
   }
   const rules = {
     search: 'string',
-    longitude: 'required|numeric',
-    latitude: 'required|numeric',
+    longitude: 'required|numeric|min:-180|max:180',
+    latitude: 'required|numeric|min:-90|max:90',
     page: 'integer|min:1',
     size: 'integer|min:1',
   }
