@@ -27,7 +27,7 @@ function App({
   // You can also provide a custom RPC endpoint.
   const endpoint = useMemo(() => clusterApiUrl(network), [network]);
 
-  const wallets = useMemo(() => [new UnsafeBurnerWalletAdapter()], [network]);
+  const wallets = useMemo(() => [new UnsafeBurnerWalletAdapter()], []);
 
   const Layout: any = layout;
   const Header: any = header;
