@@ -1,16 +1,22 @@
 import mongoose from 'mongoose'
-import { PAGINATION_SETTING, SORT_DIRECTION } from '@root/utils/constants'
-import { configPaginationAggregate, escapeStringRegexp } from '@root/utils/common'
+import { HTTP_CONSTANTS, PAGINATION_SETTING, SORT_DIRECTION } from '@root/utils/constants'
+import { calculateDistance, configPaginationAggregate, escapeStringRegexp } from '@root/utils/common'
 import { findLocationWithAggregateQuery } from '@root/repositories/locationRepository'
+import { BaseError } from '@root/utils/baseError'
+import { LOCATION_NOT_FOUND } from '@root/utils/responseMsg'
 
 export const getListLocations = async (req) => {
-  const { size, page } = req.body
+  const { size, page, longitude: userLongitude, latitude: userLatitude } = req.body
   const params = {
     ...req.body,
     page: page || PAGINATION_SETTING.DEFAULT_PAGE,
     size: size || PAGINATION_SETTING.PAGE_SIZE,
   }
   const { locations, totalItem } = await getLocationsByFilters(params)
+  const locationWithDistance = locations.map((location) => ({
+    ...location,
+    distance: calculateDistance(userLatitude, userLongitude, location.latitude, location.longitude),
+  }))
   return {
     pagination: {
       page: params.page,
@@ -18,15 +24,21 @@ export const getListLocations = async (req) => {
       totalItem,
       totalPage: Math.ceil(totalItem / params.size),
     },
-    locations,
+    locations: locationWithDistance,
   }
 }
 
 export const getLocationInfo = async (req) => {
-  const { locationId } = req.body
+  const { locationId, longitude: userLongitude, latitude: userLatitude } = req.body
   const aggregateQuery = buildLocationDetailAggregateQuery(locationId)
   const results = await findLocationWithAggregateQuery(aggregateQuery)
-  return results && results.length > 0 ? results[0] : {}
+  if (results.length === 0) {
+    throw new BaseError(new Error(LOCATION_NOT_FOUND), LOCATION_NOT_FOUND, HTTP_CONSTANTS.HTTP_STATUS_BAD_REQUEST)
+  }
+  return {
+    ...results[0],
+    distance: calculateDistance(userLatitude, userLongitude, results[0].latitude, results[0].longitude),
+  }
 }
 
 export const getNearbyLocations = async (req) => {
@@ -68,7 +80,7 @@ const buildLocationQuery = (filters) => {
       $or: [
         { name: new RegExp(escapeStringRegexp(filters.search), 'i') },
         { address: new RegExp(escapeStringRegexp(filters.search), 'i') },
-        { cityName: new RegExp(escapeStringRegexp(filters.search), 'i') }
+        { cityName: new RegExp(escapeStringRegexp(filters.search), 'i') },
       ],
     }
     query.filters = {
@@ -201,9 +213,12 @@ const getNearbyLocationsByFilters = async (filters) => {
 const buildNearbyLocationQuery = (filters) => {
   const query = {}
   query.nearbyLocation = {
-    near: { type: 'Point', coordinates: [filters.longitude, filters.latitude] },
+    near: {
+      type: 'Point',
+      coordinates: [filters.longitude, filters.latitude],
+    },
     distanceField: 'distance',
-    spherical: true
+    spherical: true,
   }
   query.filters = {}
   if (filters.search) {
@@ -211,7 +226,7 @@ const buildNearbyLocationQuery = (filters) => {
       $or: [
         { name: new RegExp(escapeStringRegexp(filters.search), 'i') },
         { address: new RegExp(escapeStringRegexp(filters.search), 'i') },
-        { cityName: new RegExp(escapeStringRegexp(filters.search), 'i') }
+        { cityName: new RegExp(escapeStringRegexp(filters.search), 'i') },
       ],
     }
     query.filters = {

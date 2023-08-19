@@ -15,6 +15,8 @@ export const middleware02 = (req, res, next) => {
   const params = { ...req.body }
   const rules = {
     locationId: 'required|string',
+    longitude: 'required|numeric|min:-180|max:180',
+    latitude: 'required|numeric|min:-90|max:90',
   }
   requestParamsValidator(params, rules)
   return next()
