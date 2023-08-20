@@ -1,7 +1,6 @@
-import { AnchorProvider, Wallet } from '@project-serum/anchor';
-import NodeWallet from '@project-serum/anchor/dist/cjs/nodewallet';
+import { AnchorProvider } from '@project-serum/anchor';
 import { AnchorWallet } from '@solana/wallet-adapter-react';
-import { Connection, Keypair } from '@solana/web3.js';
+import { Connection } from '@solana/web3.js';
 import axios from 'axios';
 
 export class WrappedConnection extends Connection {
