@@ -33,7 +33,7 @@ function App({
 
   const wallets = useMemo(
     () => [new PhantomWalletAdapter(), new BackpackWalletAdapter()],
-    []
+    [network]
   );
 
   const Layout: any = layout;
