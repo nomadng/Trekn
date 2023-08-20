@@ -49,7 +49,12 @@ export const PopupMint = ({
     <div>
       {width >= 600 ? (
         <Modal
-          title={label}
+          title={
+            <div className="flex items-center">
+              <Icon />
+              <div className="text-2xl font-bold ml-[10px]">{label}</div>
+            </div>
+          }
           open={isOpenPopup}
           width={508}
           footer={null}
@@ -67,7 +72,11 @@ export const PopupMint = ({
                 ></Image>
               </div>
             )}
-            <div className="w-full my-7	">{buttonAction}</div>
+            {buttonAction && (
+              <div className="w-full flex items-center justify-center">
+                {buttonAction}
+              </div>
+            )}
           </>
         </Modal>
       ) : (
@@ -78,26 +87,29 @@ export const PopupMint = ({
               <div className="text-2xl font-bold ml-[10px]">{label}</div>
             </div>
           }
-          className="rounded-t-3xl"
+          className="rounded-t-3xl "
           placement={"bottom"}
-          height={560}
           onClose={onClosePopup}
           open={isOpenPopup}
         >
-          <>
-            <div className="flex h-10">
+          <div className="flex flex-col justifyContent-between">
+            <div className="flex ">
               <div className="font-medium font-normal">{content}</div>
             </div>
             {linkPhoto && (
-              <div className="w-full flex items-center justifyContent-center px-[68px] mb-[20px]">
+              <div className="w-full flex items-center justifyContent-center px-[68px] my-[25px]">
                 <Image
                   className="w-full rounded-xl bg-cover"
                   src={linkPhoto}
                 ></Image>
               </div>
             )}
-            {buttonAction && <div className="w-full my-7	">{buttonAction}</div>}
-          </>
+            {buttonAction && (
+              <div className="w-full flex items-center justify-center">
+                {buttonAction}
+              </div>
+            )}
+          </div>
         </Drawer>
       )}
     </div>
