@@ -23,6 +23,7 @@
     "@types/react-dom": "^18.0.0",
     "antd": "^5.8.2",
     "axios": "^1.4.0",
+    "browserify-zlib": "^0.2.0",
     "embla-carousel-react": "^8.0.0-rc11",
     "google-map-react": "^2.2.1",
     "react": "^18.2.0",
@@ -37,10 +38,10 @@
     "web-vitals": "^2.1.0"
   },
   "scripts": {
-    "dev": "GENERATE_SOURCEMAP=false && react-scripts start",
-    "build": "GENERATE_SOURCEMAP=false && react-scripts build",
-    "test": "GENERATE_SOURCEMAP=false && react-scripts test",
-    "eject": "GENERATE_SOURCEMAP=false && react-scripts eject"
+    "dev": "GENERATE_SOURCEMAP=false && react-app-rewired start",
+    "build": "GENERATE_SOURCEMAP=false && react-app-rewired build",
+    "test": "GENERATE_SOURCEMAP=false && react-app-rewired test",
+    "eject": "GENERATE_SOURCEMAP=false && react-app-rewired eject"
   },
   "eslintConfig": {
     "extends": [
@@ -62,6 +63,16 @@
   },
   "devDependencies": {
     "@types/google-map-react": "^2.1.7",
-    "@types/react-slick": "^0.23.10"
+    "@types/react-slick": "^0.23.10",
+    "assert": "^2.0.0",
+    "buffer": "^6.0.3",
+    "crypto-browserify": "^3.12.0",
+    "https-browserify": "^1.0.0",
+    "os-browserify": "^0.3.0",
+    "process": "^0.11.10",
+    "react-app-rewired": "^2.2.1",
+    "stream-browserify": "^3.0.0",
+    "stream-http": "^3.2.0",
+    "url": "^0.11.1"
   }
 }
