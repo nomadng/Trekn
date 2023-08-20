@@ -14,6 +14,8 @@ import { useWallet } from "@solana/wallet-adapter-react";
 import { PopupMint } from "../components/PopupMint";
 import { WalletMultiButton } from "@solana/wallet-adapter-react-ui";
 import request from "../axios";
+import * as buffer from "buffer";
+window.Buffer = buffer.Buffer;
 
 function Details() {
   const wallet = useAnchorWallet();
@@ -30,9 +32,9 @@ function Details() {
   const { width } = useWindowSize();
   const { id } = useParams();
 
-  const { status } = useMemo(() => {
-    return getStatusLocation(locationDetail?.distance, locationDetail?.radius);
-  }, [locationDetail]);
+  // const { status } = useMemo(() => {
+  //   return getStatusLocation(locationDetail?.distance, locationDetail?.radius);
+  // }, [locationDetail]);
 
   const { Icon, label, title } = useMemo(() => {
     return getStatusLocation(locationDetail?.distance, locationDetail?.radius);
@@ -82,37 +84,24 @@ function Details() {
       if (wallet && data.transaction) {
         const transactionBuffer = Buffer.from(data.transaction, "base64");
 
-        console.log("transactionBuffer", transactionBuffer);
-
         const connection = new Connection(clusterApiUrl("devnet"));
-
-        console.log("connection", connection);
 
         const transaction = Transaction.from(transactionBuffer);
 
-        console.log("transaction", transaction);
-
         const { lastValidBlockHeight } = await connection.getLatestBlockhash();
         transaction.lastValidBlockHeight = lastValidBlockHeight;
-        console.log(2);
 
         const tx = await wallet.signTransaction(transaction);
+
         const serialized = tx.serialize({
           requireAllSignatures: true,
           verifySignatures: true,
         });
 
-        console.log(3);
-
         try {
           const signature = await connection.sendEncodedTransaction(
-            serialized.toString("base64"),
-            {
-              maxRetries: 5,
-              skipPreflight: true,
-            }
+            serialized.toString("base64")
           );
-          console.log(4);
 
           if (signature) {
             setOpenMintDrawer(true);
