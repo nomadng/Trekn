@@ -7,7 +7,7 @@ mongoose.connect(serverConfig.get('mongodb.url')).catch((error) => {
   process.exit(1)
 })
 
-mongoose.set('debug', true)
+// mongoose.set('debug', true)
 
 const db = mongoose.connection
 
