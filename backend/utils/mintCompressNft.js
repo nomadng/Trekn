@@ -31,16 +31,16 @@ export const createTrxMintCompressedNft = async ({
   const mintIx = createMintToCollectionV1Instruction(
     {
       merkleTree: treeAddress,
-      treeAuthority,
-      treeDelegate: userPubkey,
-      payer: serverKeypair.publicKey,
-      leafDelegate: userPubkey,
-      leafOwner: userPubkey,
+      treeAuthority: treeAuthority,
+      treeDelegate: serverKeypair.publicKey,
+      payer: userPubkey,
+      leafDelegate: serverKeypair.publicKey,
+      leafOwner: serverKeypair.publicKey,
       compressionProgram: SPL_ACCOUNT_COMPRESSION_PROGRAM_ID,
       logWrapper: SPL_NOOP_PROGRAM_ID,
-      collectionAuthority: userPubkey,
+      collectionAuthority: serverKeypair.publicKey,
       collectionAuthorityRecordPda: BUBBLEGUM_PROGRAM_ID,
-      collectionMint,
+      collectionMint: collectionMint,
       collectionMetadata: collectionMetadataAccount,
       editionAccount: collectionMasterEditionAccount,
       bubblegumSigner: bgumSigner,
@@ -56,7 +56,8 @@ export const createTrxMintCompressedNft = async ({
     }
   )
   const tx = new Transaction().add(mintIx)
-  tx.feePayer = serverKeypair.publicKey
+  tx.feePayer = userPubkey
+
   const { blockhash } = await connection.getLatestBlockhash()
   tx.recentBlockhash = blockhash
 
