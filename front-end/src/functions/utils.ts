@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { WrappedConnection } from './wrappedConnection';
 import { PublicKey, Transaction } from '@solana/web3.js';
 import { BN } from '@project-serum/anchor';
