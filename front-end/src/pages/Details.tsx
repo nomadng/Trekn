@@ -13,6 +13,7 @@ import { useAuthContext } from "../context/AuthContext";
 import { useWallet } from "@solana/wallet-adapter-react";
 import { PopupMint } from "../components/PopupMint";
 import { WalletMultiButton } from "@solana/wallet-adapter-react-ui";
+import MetalCoinImg from "../icons/metal-coin.png";
 import request from "../axios";
 import * as buffer from "buffer";
 window.Buffer = buffer.Buffer;
@@ -24,7 +25,7 @@ function Details() {
 
   const [openMintDrawer, setOpenMintDrawer] = useState(false);
   const [statusMint, setStatusMint] = useState("minting");
-  const [photoLinkMintSuccess, setPhotoLinkMintSuccess] = useState("");
+  const [photoLinkMintSuccess, setPhotoLinkMintSuccess] = useState<string>();
   const [isShowMore, setIsShowMore] = useState(false);
   const [actionButton, setActionButton] = useState<ReactNode>();
   const [isShowSlider, setShowSlider] = useState(true);
@@ -32,13 +33,24 @@ function Details() {
   const { width } = useWindowSize();
   const { id } = useParams();
 
-  // const { status } = useMemo(() => {
-  //   return getStatusLocation(locationDetail?.distance, locationDetail?.radius);
-  // }, [locationDetail]);
+  const { status } = useMemo(() => {
+    return getStatusLocation(locationDetail?.distance, locationDetail?.radius);
+  }, [locationDetail]);
 
   const { Icon, label, title } = useMemo(() => {
     return getStatusLocation(locationDetail?.distance, locationDetail?.radius);
   }, [locationDetail]);
+
+  const handleSetDataPopup = (
+    status: string,
+    photoLink?: string,
+    actionButton?: ReactNode
+  ) => {
+    setOpenMintDrawer(true);
+    setStatusMint(status);
+    setPhotoLinkMintSuccess(photoLink);
+    setActionButton(actionButton);
+  };
 
   const handleClick = async () => {
     setOpenMintDrawer(true);
@@ -52,14 +64,12 @@ function Details() {
       if (res.status === 200) {
         handleMint(res.data);
       } else {
-        setOpenMintDrawer(true);
-        setStatusMint("mintFailed");
-        setPhotoLinkMintSuccess("./metal-coin.png");
+        handleSetDataPopup("mintFailed", MetalCoinImg);
       }
     } else {
-      setOpenMintDrawer(true);
-      setStatusMint("connectWallet");
-      setActionButton(
+      handleSetDataPopup(
+        "connectWallet",
+        "",
         <WalletMultiButton
           startIcon={undefined}
           style={{
@@ -97,39 +107,31 @@ function Details() {
           requireAllSignatures: true,
           verifySignatures: true,
         });
+        const signature = await connection.sendEncodedTransaction(
+          serialized.toString("base64")
+        );
 
-        try {
-          const signature = await connection.sendEncodedTransaction(
-            serialized.toString("base64")
-          );
-
-          if (signature) {
-            setOpenMintDrawer(true);
-            setStatusMint("mintSuccess");
-            setPhotoLinkMintSuccess(data.photoLink);
-            setActionButton(
-              <Button className="w-full rounded-[24px] bg-black text-white">
-                Share to socials
-              </Button>
-            );
-          }
-        } catch (e) {
-          setOpenMintDrawer(true);
-          setStatusMint("mintFailed");
-          setPhotoLinkMintSuccess("./metal-coin.png");
-          setActionButton(
-            <Button
-              className="w-full rounded-[24px] bg-black text-white"
-              onClick={() => setOpenMintDrawer(false)}
-            >
-              Retry
+        if (signature) {
+          handleSetDataPopup(
+            "mintSuccess",
+            data.photoLink,
+            <Button className="w-full rounded-[24px] bg-black text-white">
+              Share to socials
             </Button>
           );
-          console.error("Failed to mint compressed NFT", e);
-          throw e;
         }
       }
     } catch (error) {
+      handleSetDataPopup(
+        "mintFailed",
+        MetalCoinImg,
+        <Button
+          className="w-full rounded-[24px] bg-black text-white"
+          onClick={() => setOpenMintDrawer(false)}
+        >
+          Retry
+        </Button>
+      );
       console.error("There was an error sending the request", error);
     }
   };
@@ -249,8 +251,9 @@ function Details() {
                 <Button
                   className="h-12 rounded-3xl w-full flex items-center justify-center text-base font-bold bg-black text-white mb-[12px]"
                   onClick={() => handleClick()}
+                  disabled={status === "readyToMint" ? false : true}
                 >
-                  Mint proof
+                  {status === "readyToMint" ? " Mint proof" : "Go here to mint"}
                 </Button>
                 <Button
                   className="h-12 rounded-3xl w-full flex items-center justify-center text-base font-bold bg-black text-white"
