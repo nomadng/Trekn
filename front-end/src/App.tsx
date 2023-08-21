@@ -28,13 +28,13 @@ function App({
 }) {
   const network = WalletAdapterNetwork.Devnet;
 
-  // You can also provide a custom RPC endpoint.
-  const endpoint = useMemo(() => clusterApiUrl(network), [network]);
+  // // You can also provide a custom RPC endpoint.
+  // const endpoint = useMemo(() => clusterApiUrl(network), [network]);
 
-  const wallets = useMemo(
-    () => [new PhantomWalletAdapter(), new BackpackWalletAdapter()],
-    [network]
-  );
+  // const wallets = useMemo(
+  //   () => [new PhantomWalletAdapter(), new BackpackWalletAdapter()],
+  //   [network]
+  // );
 
   const Layout: any = layout;
   const Header: any = header;
@@ -42,8 +42,14 @@ function App({
     <>
       <div className='bg-white'>
         <AuthProvider>
-          <ConnectionProvider endpoint={endpoint}>
-            <WalletProvider wallets={wallets} autoConnect>
+          <ConnectionProvider endpoint={'https://api.devnet.solana.com'}>
+            <WalletProvider
+              wallets={[
+                new PhantomWalletAdapter(),
+                new BackpackWalletAdapter(),
+              ]}
+              autoConnect
+            >
               <WalletModalProvider>
                 <Header></Header>
                 <Layout>
