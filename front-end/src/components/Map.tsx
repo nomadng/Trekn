@@ -1,6 +1,5 @@
 import React from "react";
 import GoogleMapReact from "google-map-react";
-import { REACT_APP_MAP_API } from "../const /env.const";
 import { DetailCardProps } from "./DetailCard";
 
 function Map({ data, coordsNow }: MapProps) {
@@ -8,7 +7,7 @@ function Map({ data, coordsNow }: MapProps) {
     <div style={{ height: "100%" }}>
       {data?._id && (
         <GoogleMapReact
-          bootstrapURLKeys={{ key: REACT_APP_MAP_API }}
+          bootstrapURLKeys={{ key: String(process.env.REACT_APP_MAP_API) }}
           defaultZoom={15}
           defaultCenter={{
             lat: data?.latitude,

@@ -1,21 +1,18 @@
-import React, { useMemo } from 'react';
-import './App.css';
-import { Outlet } from 'react-router';
-import { WalletAdapterNetwork } from '@solana/wallet-adapter-base';
-import { clusterApiUrl } from '@solana/web3.js';
-import { UnsafeBurnerWalletAdapter } from '@solana/wallet-adapter-unsafe-burner';
+import React from "react";
+import "./App.css";
+import { Outlet } from "react-router";
 import {
   ConnectionProvider,
   WalletProvider,
-} from '@solana/wallet-adapter-react';
-import { WalletModalProvider } from '@solana/wallet-adapter-react-ui';
-import 'react-responsive-carousel/lib/styles/carousel.min.css';
-import './index.css';
-import { AuthProvider } from './context/AuthContext';
+} from "@solana/wallet-adapter-react";
+import { WalletModalProvider } from "@solana/wallet-adapter-react-ui";
+import "react-responsive-carousel/lib/styles/carousel.min.css";
+import "./index.css";
+import { AuthProvider } from "./context/AuthContext";
 import {
   BackpackWalletAdapter,
   PhantomWalletAdapter,
-} from '@solana/wallet-adapter-wallets';
+} from "@solana/wallet-adapter-wallets";
 
 function App({
   required_connect_wallet,
@@ -26,7 +23,7 @@ function App({
   header: any;
   layout: any;
 }) {
-  const network = WalletAdapterNetwork.Devnet;
+  // const network = WalletAdapterNetwork.Devnet;
 
   // // You can also provide a custom RPC endpoint.
   // const endpoint = useMemo(() => clusterApiUrl(network), [network]);
@@ -40,9 +37,9 @@ function App({
   const Header: any = header;
   return (
     <>
-      <div className='bg-white'>
+      <div className="bg-white">
         <AuthProvider>
-          <ConnectionProvider endpoint={'https://api.devnet.solana.com'}>
+          <ConnectionProvider endpoint={"https://api.devnet.solana.com"}>
             <WalletProvider
               wallets={[
                 new PhantomWalletAdapter(),

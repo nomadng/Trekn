@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const request = axios.create({
-  baseURL: "http://18.141.105.156:5001/api/v1/",
+  baseURL: process.env.REACT_APP_BASE_URL,
   headers: { "Content-Type": "application/json" },
 });
 
