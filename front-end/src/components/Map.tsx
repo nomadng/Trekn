@@ -7,7 +7,7 @@ function Map({ data, coordsNow }: MapProps) {
     <div style={{ height: "100%" }}>
       {data?._id && (
         <GoogleMapReact
-          bootstrapURLKeys={{ key: String(process.env.REACT_APP_MAP_API) }}
+          bootstrapURLKeys={{ key: process.env.REACT_APP_MAP_API as string }}
           defaultZoom={15}
           defaultCenter={{
             lat: data?.latitude,

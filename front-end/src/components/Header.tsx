@@ -19,9 +19,9 @@ const Header = () => {
   return (
     <>
       <div className="m-5 flex items-center justify-between">
-        <div>
+        <a href="/home">
           <img src="./Logo.png" alt="" />
-        </div>
+        </a>
 
         <div>
           {publicKey ? (
