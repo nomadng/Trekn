@@ -1,8 +1,8 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { useWallet } from "@solana/wallet-adapter-react";
-import { WalletMultiButton } from "@solana/wallet-adapter-react-ui";
-import { useEffect } from "react";
-import { useNavigate } from "react-router";
+import { useWallet } from '@solana/wallet-adapter-react';
+import { WalletMultiButton } from '@solana/wallet-adapter-react-ui';
+import { useEffect } from 'react';
+import { useNavigate } from 'react-router';
 
 const Header = () => {
   const navigate = useNavigate();
@@ -10,17 +10,17 @@ const Header = () => {
 
   useEffect(() => {
     if (publicKey !== null) {
-      navigate("/home");
+      navigate('/home');
     } else {
-      navigate("/connect-wallet");
+      navigate('/connect-wallet');
     }
   }, [publicKey]);
 
   return (
     <>
-      <div className="m-5 flex items-center justify-between">
+      <div className='m-5 flex items-center justify-between'>
         <div>
-          <img src="./Logo.png" alt="" />
+          <img src='./Logo.png' alt='' />
         </div>
 
         <div>
@@ -31,15 +31,14 @@ const Header = () => {
                 style={{
                   width: 106,
                   height: 40,
-                  backgroundColor: "white",
-                  color: "#00A868",
+                  backgroundColor: 'white',
+                  color: '#00A868',
                   fontSize: 12,
                   borderRadius: 24,
-                  fontWeight: "bold",
-                  justifyContent: "center",
+                  fontWeight: 'bold',
+                  justifyContent: 'center',
                   paddingRight: 35,
-                  alignItems: "center",
-                  border: "1px solid #00A868",
+                  alignItems: 'center',
                 }}
               />
             </div>
@@ -49,14 +48,13 @@ const Header = () => {
                 style={{
                   width: 130,
                   height: 40,
-                  backgroundColor: "black",
-                  color: "white",
+                  backgroundColor: 'black',
+                  color: 'white',
                   fontSize: 12,
                   borderRadius: 24,
-                  fontWeight: "bold",
-                  justifyContent: "center",
-                  alignItems: "center",
-                  border: "1px solid #00A868",
+                  fontWeight: 'bold',
+                  justifyContent: 'center',
+                  alignItems: 'center',
                 }}
               />
             </div>
