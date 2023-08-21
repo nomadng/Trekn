@@ -42,7 +42,7 @@ function Home() {
           className="mb-[60px] w-full sm:h-[264px] bg-cover flex items-center justify-center "
           style={{
             backgroundImage:
-              width > 600
+              width >= 640
                 ? `url('https://vapa.vn/wp-content/uploads/2022/12/anh-canh-dep-001-1.jpg')`
                 : "",
           }}
