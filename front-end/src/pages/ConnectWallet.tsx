@@ -37,7 +37,7 @@ function ConnectWallet() {
               Collect cNFTs from all the places you've visited and show off your
               adventures to the world!
             </div>
-            <div className="w-full h-[48px] relative items-center justify-center rounded-3xl bg-[#00A868] text-white text-base font-semibold px-[32px] hidden sm:flex">
+            <div className="w-full h-[48px] relative items-center justify-center rounded-3xl bg-[#00A868] text-white text-base font-semibold px-[32px] mt-[25px] hidden sm:flex">
               <p className="absolute">Connect wallet to start explore</p>
               <WalletMultiButton
                 style={{
