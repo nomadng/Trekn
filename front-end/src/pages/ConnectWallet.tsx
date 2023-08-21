@@ -1,9 +1,9 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { useEffect } from "react";
-import { Button } from "antd";
 import { ListDetail } from "../components/ListDetail";
 import { useWindowSize } from "../hooks/useWindownSize";
 import { useAuthContext } from "../context/AuthContext";
+import { WalletMultiButton } from "@solana/wallet-adapter-react-ui";
 require("@solana/wallet-adapter-react-ui/styles.css");
 
 function ConnectWallet() {
@@ -21,7 +21,7 @@ function ConnectWallet() {
           className="w-full sm:h-[704px] flex items-end bg-cover mt-[40px]"
           style={{
             backgroundImage:
-              width > 600
+              width >= 640
                 ? "url('https://vapa.vn/wp-content/uploads/2022/12/anh-canh-dep-001-1.jpg')"
                 : "",
           }}
@@ -37,9 +37,18 @@ function ConnectWallet() {
               Collect cNFTs from all the places you've visited and show off your
               adventures to the world!
             </div>
-            <Button className="w-auto h-12 rounded-3xl bg-[#00A868] text-white text-base font-semibold mb-12 px-[32px] mt-[16px] hidden sm:block">
-              Connect wallet to start explore
-            </Button>
+            <div className="w-full h-[48px] relative items-center justify-center rounded-3xl bg-[#00A868] text-white text-base font-semibold px-[32px] hidden sm:flex">
+              <p className="absolute">Connect wallet to start explore</p>
+              <WalletMultiButton
+                style={{
+                  width: "490px",
+                  position: "absolute",
+                  top: "-25px",
+                  left: "-240px",
+                  opacity: 0,
+                }}
+              />
+            </div>
           </div>
         </div>
 
@@ -48,9 +57,18 @@ function ConnectWallet() {
             Popular minted locations
           </div>
           <ListDetail data={listLocation} />
-          <Button className="w-full h-12 rounded-3xl bg-[#00A868] text-white text-base font-semibold mb-12 sm:hidden mt-[25px]">
-            Connect wallet to start explore
-          </Button>
+          <div className="w-full h-[48px] relative items-center justify-center rounded-3xl bg-[#00A868] text-white text-base font-semibold px-[32px] mt-[24px] flex sm:hidden">
+            <p className="absolute">Connect wallet to start explore</p>
+            <WalletMultiButton
+              style={{
+                width: "490px",
+                position: "absolute",
+                top: "-25px",
+                left: "-240px",
+                opacity: 0,
+              }}
+            />
+          </div>
         </div>
       </div>
     </>

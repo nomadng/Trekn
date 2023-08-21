@@ -44,19 +44,15 @@ const Header = () => {
               />
             </div>
           ) : (
-            <div>
+            <div className="w-[130px] h-[40px] relative bg-black  items-center justify-center rounded-3xl bg-[#00A868] text-white text-base font-semibold px-[32px] overflow-hidden flex">
+              <p className="absolute text-[12px] font-bold">Connect wallet </p>
               <WalletMultiButton
                 style={{
-                  width: 130,
-                  height: 40,
-                  backgroundColor: "black",
-                  color: "white",
-                  fontSize: 12,
-                  borderRadius: 24,
-                  fontWeight: "bold",
-                  justifyContent: "center",
-                  alignItems: "center",
-                  border: "1px solid #00A868",
+                  width: "130px",
+                  position: "absolute",
+                  top: "-25px",
+                  left: "-65px",
+                  opacity: 0,
                 }}
               />
             </div>

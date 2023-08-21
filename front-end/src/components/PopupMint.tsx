@@ -47,7 +47,7 @@ export const PopupMint = ({
 
   return (
     <div>
-      {width >= 600 ? (
+      {width >= 640 ? (
         <Modal
           title={
             <div className="flex items-center">
