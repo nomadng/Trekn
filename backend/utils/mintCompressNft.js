@@ -23,8 +23,8 @@ export const createTrxMintCompressedNft = async ({
   collectionMetadataAccount,
   collectionMasterEditionAccount,
 }) => {
-  const connection_url = process.env.HELIUS_RPC_URL
-  const connection = new WrappedConnection(serverKeypair, connection_url)
+  const connectionUrl = process.env.HELIUS_RPC_URL
+  const connection = new WrappedConnection(serverKeypair, connectionUrl)
   const [treeAuthority, _bump] = PublicKey.findProgramAddressSync([treeAddress.toBuffer()], BUBBLEGUM_PROGRAM_ID)
   const [bgumSigner, __] = PublicKey.findProgramAddressSync(
     [Buffer.from('collection_cpi', 'utf8')],
