@@ -95,24 +95,25 @@ function Details() {
       if (wallet && data.transaction) {
         const transactionBuffer = Buffer.from(data.transaction, 'base64');
 
-        const connection = new WrappedConnection(
-          wallet,
-          process.env.HELIUS_RPC_URL!
+        const connection = new Connection(
+          process.env.REACT_APP_HELIUS_RPC_URL!
         );
-
         const transaction = Transaction.from(transactionBuffer);
 
         const { lastValidBlockHeight } = await connection.getLatestBlockhash();
         transaction.lastValidBlockHeight = lastValidBlockHeight;
 
         const tx = await wallet.signTransaction(transaction);
+        // const { blockhash } = await connection.getLatestBlockhash();
+        // tx.recentBlockhash = blockhash;
 
         const serialized = tx.serialize({
           requireAllSignatures: true,
           verifySignatures: true,
         });
         const signature = await connection.sendEncodedTransaction(
-          serialized.toString('base64')
+          serialized.toString('base64'),
+          { skipPreflight: true, maxRetries: 5 }
         );
 
         if (signature) {
@@ -123,6 +124,7 @@ function Details() {
               Share to socials
             </Button>
           );
+          console.log(signature);
         }
       }
     } catch (error) {
