@@ -1,10 +1,10 @@
-import React from "react";
-import GoogleMapReact from "google-map-react";
-import { DetailCardProps } from "./DetailCard";
+import React from 'react';
+import GoogleMapReact from 'google-map-react';
+import { DetailCardProps } from './DetailCard';
 
 function Map({ data, coordsNow }: MapProps) {
   return (
-    <div style={{ height: "100%" }}>
+    <div style={{ height: '100%' }}>
       {data?._id && (
         <GoogleMapReact
           bootstrapURLKeys={{ key: process.env.REACT_APP_MAP_API as string }}
@@ -16,10 +16,10 @@ function Map({ data, coordsNow }: MapProps) {
           yesIWantToUseGoogleMapApiInternals
           onGoogleApiLoaded={({ map }) => {
             new google.maps.Circle({
-              strokeColor: "green",
+              strokeColor: 'green',
               strokeOpacity: 0.6,
               strokeWeight: 2,
-              fillColor: "green",
+              fillColor: 'green',
               fillOpacity: 0.1,
               map,
               center: {
@@ -35,7 +35,7 @@ function Map({ data, coordsNow }: MapProps) {
               },
               map: map,
               icon: {
-                url: "/marker.png",
+                url: '/marker.png',
                 scaledSize: new google.maps.Size(50, 50),
               },
             });
