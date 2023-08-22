@@ -16,6 +16,7 @@ import { WalletMultiButton } from '@solana/wallet-adapter-react-ui';
 import MetalCoinImg from '../icons/metal-coin.png';
 import request from '../axios';
 import * as buffer from 'buffer';
+import { WrappedConnection } from '../functions/wrappedConnection';
 window.Buffer = buffer.Buffer;
 
 function Details() {
@@ -94,7 +95,10 @@ function Details() {
       if (wallet && data.transaction) {
         const transactionBuffer = Buffer.from(data.transaction, 'base64');
 
-        const connection = new Connection('https://rpc.ankr.com/solana');
+        const connection = new WrappedConnection(
+          wallet,
+          process.env.HELIUS_RPC_URL!
+        );
 
         const transaction = Transaction.from(transactionBuffer);
 

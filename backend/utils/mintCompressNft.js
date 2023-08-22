@@ -12,6 +12,7 @@ import serverConfig from '@root/config/server'
 import { BaseError } from '@root/utils/baseError'
 import { INVALID_SECRET_KEY } from '@root/utils/responseMsg'
 import { HTTP_CONSTANTS } from '@root/utils/constants'
+import { WrappedConnection } from './wrappedConnection'
 
 export const createTrxMintCompressedNft = async ({
   nftArgs,
@@ -22,7 +23,8 @@ export const createTrxMintCompressedNft = async ({
   collectionMetadataAccount,
   collectionMasterEditionAccount,
 }) => {
-  const connection = new Connection('https://rpc.ankr.com/solana')
+  const connection_url = process.env.HELIUS_RPC_URL
+  const connection = new WrappedConnection(serverKeypair, connection_url)
   const [treeAuthority, _bump] = PublicKey.findProgramAddressSync([treeAddress.toBuffer()], BUBBLEGUM_PROGRAM_ID)
   const [bgumSigner, __] = PublicKey.findProgramAddressSync(
     [Buffer.from('collection_cpi', 'utf8')],
