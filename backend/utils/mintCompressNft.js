@@ -1,4 +1,4 @@
-import { clusterApiUrl, Connection, Keypair, PublicKey, Transaction } from '@solana/web3.js'
+import { Keypair, PublicKey, Transaction } from '@solana/web3.js'
 import {
   createMintToCollectionV1Instruction,
   PROGRAM_ID as BUBBLEGUM_PROGRAM_ID,
@@ -12,6 +12,7 @@ import serverConfig from '@root/config/server'
 import { BaseError } from '@root/utils/baseError'
 import { INVALID_SECRET_KEY } from '@root/utils/responseMsg'
 import { HTTP_CONSTANTS } from '@root/utils/constants'
+import externalServices from '@root/config/externalServices'
 import { WrappedConnection } from './wrappedConnection'
 
 export const createTrxMintCompressedNft = async ({
@@ -23,7 +24,7 @@ export const createTrxMintCompressedNft = async ({
   collectionMetadataAccount,
   collectionMasterEditionAccount,
 }) => {
-  const connectionUrl = process.env.HELIUS_RPC_URL
+  const connectionUrl = externalServices.get('heliusRpcUrl')
   const connection = new WrappedConnection(serverKeypair, connectionUrl)
   const [treeAuthority, _bump] = PublicKey.findProgramAddressSync([treeAddress.toBuffer()], BUBBLEGUM_PROGRAM_ID)
   const [bgumSigner, __] = PublicKey.findProgramAddressSync(
