@@ -22,7 +22,7 @@ export const createTrxMintCompressedNft = async ({
   collectionMetadataAccount,
   collectionMasterEditionAccount,
 }) => {
-  const connection = new Connection(clusterApiUrl('mainnet-beta'))
+  const connection = new Connection('https://rpc.ankr.com/solana')
   const [treeAuthority, _bump] = PublicKey.findProgramAddressSync([treeAddress.toBuffer()], BUBBLEGUM_PROGRAM_ID)
   const [bgumSigner, __] = PublicKey.findProgramAddressSync(
     [Buffer.from('collection_cpi', 'utf8')],
