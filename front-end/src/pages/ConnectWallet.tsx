@@ -28,13 +28,13 @@ function ConnectWallet() {
         >
           <div className="max-w-[673px]  flex flex-col rounded-tr-[24px] sm:h-[336px] sm:bg-white sm:py-[40px] sm:pl-[142px] sm:pr-[48px] ">
             <div className="text-[34px] font-bold">
-              Explore the world with NFTrip!
+              Explore the world with Trekn!
             </div>
             <div className="text-base text-[#71717A] font-medium">
-              NFTrip is a new way to prove your travels and collect memories
-              that last a lifetime! With our app, you can mint unique cNFTs as
-              proof of your travels and share them with friends and family.
-              Collect cNFTs from all the places you've visited and show off your
+              Trekn is a new way to prove your travels and collect memories that
+              last a lifetime! With our app, you can mint unique cNFTs as proof
+              of your travels and share them with friends and family. Collect
+              cNFTs from all the places you've visited and show off your
               adventures to the world!
             </div>
             <div className="w-full h-[48px] relative items-center justify-center rounded-3xl bg-[#00A868] text-white text-base font-semibold px-[32px] mt-[25px] hidden sm:flex">
