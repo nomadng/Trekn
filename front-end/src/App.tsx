@@ -25,7 +25,7 @@ function App({
   header: any;
   layout: any;
 }) {
-  const network = WalletAdapterNetwork.Devnet;
+  const network = WalletAdapterNetwork.Mainnet;
 
   // You can also provide a custom RPC endpoint.
   const endpoint = useMemo(() => clusterApiUrl(network), [network]);
