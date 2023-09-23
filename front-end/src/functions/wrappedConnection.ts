@@ -1,18 +1,18 @@
 import { AnchorProvider } from '@project-serum/anchor';
-import { AnchorWallet } from '@solana/wallet-adapter-react';
-import { Connection } from '@solana/web3.js';
+import NodeWallet from '@project-serum/anchor/dist/cjs/nodewallet';
+import { Connection, Keypair } from '@solana/web3.js';
 import axios from 'axios';
 
 export class WrappedConnection extends Connection {
   provider: AnchorProvider;
-  payer: AnchorWallet;
+  payer: Keypair;
   rpcUrl: string;
-  constructor(payer: AnchorWallet, connectionString: string, rpcUrl?: string) {
+  constructor(payer: Keypair, connectionString: string, rpcUrl?: string) {
     super(connectionString, 'confirmed');
     this.rpcUrl = rpcUrl ?? connectionString;
     this.provider = new AnchorProvider(
       new Connection(connectionString),
-      payer,
+      new NodeWallet(payer),
       {
         commitment: super.commitment,
         skipPreflight: true,

@@ -16,7 +16,6 @@ import { WalletMultiButton } from '@solana/wallet-adapter-react-ui';
 import MetalCoinImg from '../icons/metal-coin.png';
 import request from '../axios';
 import * as buffer from 'buffer';
-import { WrappedConnection } from '../functions/wrappedConnection';
 window.Buffer = buffer.Buffer;
 
 function Details() {
